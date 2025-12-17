@@ -1,0 +1,337 @@
+/* Panel administracyjny - Rejestracja na Biegi */
+
+.race-registration-admin {
+    margin: 20px 20px 20px 0;
+}
+
+/* Statystyki */
+.race-reg-stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: 600;
+    color: #2271b1;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 13px;
+    color: #646970;
+}
+
+/* Akcje */
+.race-reg-actions {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.race-search {
+    flex: 1;
+    max-width: 300px;
+    height: 32px;
+}
+
+.shortcode-info {
+    margin-left: auto;
+    font-size: 13px;
+}
+
+.shortcode-info code {
+    background: #f0f0f1;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+/* Modal */
+.race-modal {
+    display: none;
+    position: fixed;
+    z-index: 100000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.race-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.race-modal-close {
+    color: #646970;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.race-modal-close:hover,
+.race-modal-close:focus {
+    color: #000;
+}
+
+#form-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* Formularz */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="date"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    margin-top: 0;
+}
+
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #dcdcde;
+    display: flex;
+    gap: 10px;
+}
+
+/* Tabela */
+.race-reg-table-wrap {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+#races-table {
+    margin: 0;
+    border: none;
+}
+
+#races-table thead th {
+    background: #f6f7f7;
+    font-weight: 600;
+}
+
+.column-drag {
+    width: 40px;
+    text-align: center;
+}
+
+.column-date {
+    width: 100px;
+}
+
+.column-name {
+    width: auto;
+}
+
+.column-location {
+    width: 150px;
+}
+
+.column-distance {
+    width: 100px;
+}
+
+.column-website,
+.column-registration {
+    width: 120px;
+    text-align: center;
+}
+
+.column-status {
+    width: 130px;
+    text-align: center;
+}
+
+.column-actions {
+    width: 160px;
+    text-align: center;
+}
+
+/* Drag handle */
+.drag-handle {
+    cursor: move;
+    color: #8c8f94;
+    text-align: center;
+}
+
+.drag-handle:hover {
+    color: #2271b1;
+}
+
+/* Przypięte wiersze */
+.pinned-row {
+    background-color: #fff8e5 !important;
+    border-left: 4px solid #dba617;
+}
+
+.pinned-icon {
+    color: #dba617;
+    margin-left: 5px;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background: #d5e8d4;
+    color: #2d7a2d;
+}
+
+.status-badge.limit-reached {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Przyciski w tabeli */
+.column-website .button,
+.column-registration .button {
+    padding: 4px 12px;
+    height: auto;
+    line-height: 1.4;
+}
+
+.no-link {
+    color: #8c8f94;
+}
+
+/* Przyciski akcji */
+.column-actions .button {
+    padding: 2px 8px;
+    margin: 0 2px;
+}
+
+.column-actions .dashicons {
+    font-size: 16px;
+    line-height: 20px;
+}
+
+/* Placeholder dla sortowania */
+.sortable-placeholder {
+    background: #f0f0f1;
+    height: 50px;
+    border: 2px dashed #8c8f94;
+}
+
+/* Pusta tabela */
+.no-items td {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8c8f94;
+    font-size: 14px;
+}
+
+/* Footer */
+.race-reg-footer {
+    background: #f6f7f7;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.race-reg-footer p {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.race-reg-footer ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.race-reg-footer li {
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #646970;
+}
+
+/* Responsywność */
+@media screen and (max-width: 782px) {
+    .race-reg-stats {
+        flex-direction: column;
+    }
+
+    .race-reg-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .race-search {
+        max-width: 100%;
+    }
+
+    .shortcode-info {
+        margin-left: 0;
+    }
+
+    .race-modal-content {
+        margin: 10% auto;
+        width: 95%;
+        padding: 20px;
+    }
+}
