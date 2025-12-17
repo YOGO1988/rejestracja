@@ -78,25 +78,29 @@ if ($row = $result->fetch_assoc()) {
 
     // Sprawdź postmeta
     echo "\n=== META POLA ===\n";
-    $meta_query = "SELECT meta_key, meta_value FROM {$table_prefix}postmeta WHERE post_id = ?";
+    $meta_query = "SELECT meta_key, meta_value FROM {$table_prefix}postmeta WHERE post_id = ? AND meta_key = 'tabela_wynikow'";
     $meta_stmt = $mysqli->prepare($meta_query);
     $meta_stmt->bind_param("i", $page_id);
     $meta_stmt->execute();
     $meta_result = $meta_stmt->get_result();
 
-    while ($meta_row = $meta_result->fetch_assoc()) {
-        $key = $meta_row['meta_key'];
+    if ($meta_row = $meta_result->fetch_assoc()) {
         $value = $meta_row['meta_value'];
 
-        // Pokaż tylko interesujące meta
-        if (strpos($key, 'tabela') !== false || strpos($key, 'wynik') !== false || strpos($key, '_') !== 0) {
-            echo "\nMeta: $key\n";
-            if (strlen($value) > 200) {
-                echo "Wartość (pierwsze 200 znaków): " . substr($value, 0, 200) . "...\n";
-            } else {
-                echo "Wartość: $value\n";
-            }
+        echo "\n=== PEŁNA ZAWARTOŚĆ POLA 'tabela_wynikow' ===\n";
+        echo "Długość: " . strlen($value) . " znaków\n\n";
+        echo $value . "\n\n";
+
+        // Spróbuj zdekodować
+        echo "=== ZDEKODOWANE DANE ===\n";
+        $unserialized = @unserialize($value);
+        if ($unserialized !== false) {
+            print_r($unserialized);
+        } else {
+            echo "Nie udało się zdekodować!\n";
         }
+    } else {
+        echo "Pole 'tabela_wynikow' nie znalezione!\n";
     }
 
 } else {
