@@ -81,7 +81,141 @@ class Race_Results {
      */
     public function activate() {
         Race_Results_Database::create_tables();
+
+        // Automatyczny import danych z pliku 123.txt (jeśli istnieje i tabela jest pusta)
+        $this->auto_import_data();
+
         flush_rewrite_rules();
+    }
+
+    /**
+     * Automatyczny import danych z pliku 123.txt
+     */
+    private function auto_import_data() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'race_results';
+
+        // Sprawdź czy tabela jest pusta
+        $count = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+
+        if ($count > 0) {
+            // Dane już istnieją, pomiń import
+            return;
+        }
+
+        // Sprawdź czy plik 123.txt istnieje
+        $file_path = RACE_RESULTS_PLUGIN_DIR . '123.txt';
+        if (!file_exists($file_path)) {
+            return; // Brak pliku, pomiń import
+        }
+
+        // Wczytaj plik
+        $content = file_get_contents($file_path);
+
+        // Znajdź serializowane dane ACF
+        preg_match('/=== PEŁNA ZAWARTOŚĆ POLA \'tabela_wynikow\' ===.*?Długość: \d+ znaków\s+(a:\d+:\{.*?\})\s+===/s', $content, $matches);
+
+        if (!isset($matches[1])) {
+            return; // Nie znaleziono danych
+        }
+
+        $table_data = @unserialize($matches[1]);
+
+        if ($table_data === false || !isset($table_data['b']) || !is_array($table_data['b'])) {
+            return; // Błąd deserializacji
+        }
+
+        // Importuj dane
+        foreach ($table_data['b'] as $row) {
+            if (!is_array($row) || count($row) < 3) {
+                continue;
+            }
+
+            $date_cell = isset($row[0]['c']) ? $row[0]['c'] : '';
+            $name_cell = isset($row[1]['c']) ? $row[1]['c'] : '';
+            $location_cell = isset($row[2]['c']) ? $row[2]['c'] : '';
+            $pdf_cell = isset($row[3]['c']) ? $row[3]['c'] : '';
+            $online_cell = isset($row[4]['c']) ? $row[4]['c'] : '';
+
+            $date = $this->format_date_for_import(trim(str_replace('r', '', $date_cell)));
+            $name = trim($name_cell);
+            $location = trim($location_cell);
+
+            if (empty($date) || empty($name) || empty($location)) {
+                continue;
+            }
+
+            $pdf_files = $this->parse_links_for_import($pdf_cell);
+            $online_url = $this->extract_url_for_import($online_cell);
+
+            $wpdb->insert(
+                $table_name,
+                array(
+                    'race_date' => $date,
+                    'race_name' => $name,
+                    'location' => $location,
+                    'results_pdf' => !empty($pdf_files) ? json_encode($pdf_files) : null,
+                    'results_online_url' => $online_url,
+                    'created_at' => current_time('mysql'),
+                    'updated_at' => current_time('mysql')
+                ),
+                array('%s', '%s', '%s', '%s', '%s', '%s', '%s')
+            );
+        }
+    }
+
+    /**
+     * Formatuj datę dla importu
+     */
+    private function format_date_for_import($date) {
+        if (empty($date)) {
+            return null;
+        }
+
+        $date = rtrim($date, '.');
+        $parsed = DateTime::createFromFormat('d.m.Y', $date);
+
+        if ($parsed) {
+            return $parsed->format('Y-m-d');
+        }
+
+        $timestamp = strtotime($date);
+        return $timestamp !== false ? date('Y-m-d', $timestamp) : null;
+    }
+
+    /**
+     * Parsuj linki dla importu
+     */
+    private function parse_links_for_import($html) {
+        if (empty($html)) {
+            return array();
+        }
+
+        $links = array();
+        preg_match_all('/<a[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>([^<]+)<\/a>/i', $html, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $match) {
+            $url = trim($match[1]);
+            $text = trim(strip_tags($match[2]));
+
+            if (stripos($url, '.pdf') !== false || stripos($url, 'dolandia.pl') !== false) {
+                $links[] = array('url' => $url, 'button_text' => $text);
+            }
+        }
+
+        return $links;
+    }
+
+    /**
+     * Wyciągnij URL dla importu
+     */
+    private function extract_url_for_import($html) {
+        if (empty($html)) {
+            return '';
+        }
+
+        preg_match('/<a[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $html, $matches);
+        return isset($matches[1]) ? trim($matches[1]) : '';
     }
 
     /**
