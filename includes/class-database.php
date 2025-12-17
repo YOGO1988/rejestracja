@@ -24,6 +24,31 @@ class Race_Registration_Database {
         $this->table_name = $wpdb->prefix . 'race_registrations';
 
         add_action('race_reg_cleanup_old_races', array($this, 'cleanup_old_races'));
+
+        // Automatyczna aktualizacja schematu tabeli
+        $this->check_and_update_table();
+    }
+
+    /**
+     * Sprawdzenie i aktualizacja schematu tabeli
+     */
+    private function check_and_update_table() {
+        global $wpdb;
+
+        // Sprawdź czy kolumna is_coming_soon istnieje
+        $column_exists = $wpdb->get_results(
+            "SHOW COLUMNS FROM {$this->table_name} LIKE 'is_coming_soon'"
+        );
+
+        if (empty($column_exists)) {
+            // Dodaj brakującą kolumnę
+            $wpdb->query(
+                "ALTER TABLE {$this->table_name}
+                ADD COLUMN is_coming_soon tinyint(1) DEFAULT 0 AFTER is_limit_reached"
+            );
+
+            error_log('Race Registration: Added missing column is_coming_soon');
+        }
     }
 
     /**
