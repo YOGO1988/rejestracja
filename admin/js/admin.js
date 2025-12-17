@@ -159,9 +159,12 @@ jQuery(document).ready(function($) {
     });
 
     // Usuwanie zawodu
-    $(document).on('click', '.delete-race', function() {
+    $(document).on('click', '.delete-race', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         if (!confirm(raceRegAdmin.strings.confirmDelete)) {
-            return;
+            return false;
         }
 
         const raceId = $(this).data('id');
@@ -182,10 +185,15 @@ jQuery(document).ready(function($) {
                 showNotice(response.data.message, 'error');
             }
         });
+
+        return false;
     });
 
     // Przełączanie przypięcia
-    $(document).on('click', '.pin-race', function() {
+    $(document).on('click', '.pin-race', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const raceId = $(this).data('id');
         const row = $(this).closest('tr');
 
@@ -207,10 +215,15 @@ jQuery(document).ready(function($) {
                 showNotice(response.data.message, 'error');
             }
         });
+
+        return false;
     });
 
     // Przełączanie limitu
-    $(document).on('click', '.toggle-limit', function() {
+    $(document).on('click', '.toggle-limit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const raceId = $(this).data('id');
         const row = $(this).closest('tr');
 
@@ -231,6 +244,8 @@ jQuery(document).ready(function($) {
                 showNotice(response.data.message, 'error');
             }
         });
+
+        return false;
     });
 
     // Sortowanie drag & drop
