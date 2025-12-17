@@ -1,12 +1,27 @@
 jQuery(document).ready(function($) {
     'use strict';
 
+    console.log('=== Race Registration Admin JS Loaded ===');
+
     const modal = $('#race-form-modal');
     const form = $('#race-form');
     const tbody = $('#races-tbody');
 
+    console.log('Modal found:', modal.length);
+    console.log('Form found:', form.length);
+    console.log('Tbody found:', tbody.length);
+
+    if (form.length === 0) {
+        console.error('ERROR: Form #race-form not found!');
+        alert('BŁĄD: Formularz nie został znaleziony. Odśwież stronę.');
+        return;
+    }
+
+    console.log('Setting up form submit handler...');
+
     // Otwieranie modala dodawania
     $('#add-race-btn').on('click', function() {
+        console.log('=== ADD RACE BUTTON CLICKED ===');
         form[0].reset();
         $('#race-id').val('');
         $('#form-title').text('Dodaj zawody');
@@ -28,10 +43,22 @@ jQuery(document).ready(function($) {
     // Dodawanie/edycja zawodu
     form.on('submit', function(e) {
         e.preventDefault();
-        console.log('Form submitted');
+        e.stopPropagation();
+
+        console.log('=== FORM SUBMIT START ===');
+        console.log('Date:', $('#race-date').val());
+        console.log('Name:', $('#race-name').val());
+        console.log('Location:', $('#location').val());
+        console.log('Distance:', $('#distance').val());
 
         // Sprawdzenie wymaganych pól
-        if (!$('#race-date').val() || !$('#race-name').val() || !$('#location').val() || !$('#distance').val()) {
+        const raceDate = $('#race-date').val();
+        const raceName = $('#race-name').val();
+        const location = $('#location').val();
+        const distance = $('#distance').val();
+
+        if (!raceDate || !raceName || !location || !distance) {
+            console.log('Validation failed - empty fields');
             showNotice('Wypełnij wszystkie wymagane pola', 'error');
             return false;
         }
@@ -39,36 +66,48 @@ jQuery(document).ready(function($) {
         const raceId = $('#race-id').val();
         const action = raceId ? 'race_reg_update_race' : 'race_reg_add_race';
 
+        console.log('Race ID:', raceId);
+        console.log('Action:', action);
+
         const data = {
             action: action,
             nonce: raceRegAdmin.nonce,
             id: raceId,
-            race_date: $('#race-date').val(),
-            race_name: $('#race-name').val(),
-            location: $('#location').val(),
-            distance: $('#distance').val(),
-            website_url: $('#website-url').val(),
-            registration_url: $('#registration-url').val(),
+            race_date: raceDate,
+            race_name: raceName,
+            location: location,
+            distance: distance,
+            website_url: $('#website-url').val() || '',
+            registration_url: $('#registration-url').val() || '',
             is_pinned: $('#is-pinned').is(':checked') ? 1 : 0,
             is_limit_reached: $('#is-limit-reached').is(':checked') ? 1 : 0,
             is_coming_soon: $('#is-coming-soon').is(':checked') ? 1 : 0
         };
 
-        console.log('Sending data:', data);
+        console.log('Sending AJAX request with data:', data);
 
-        $.post(raceRegAdmin.ajaxUrl, data, function(response) {
-            console.log('Response:', response);
-            if (response.success) {
-                showNotice(response.data.message, 'success');
-                modal.fadeOut();
-                location.reload();
-            } else {
-                showNotice(response.data.message || 'Wystąpił błąd', 'error');
-            }
-        }).fail(function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-            showNotice('Błąd połączenia. Spróbuj ponownie.', 'error');
-        });
+        $.post(raceRegAdmin.ajaxUrl, data)
+            .done(function(response) {
+                console.log('AJAX Success - Response:', response);
+                if (response.success) {
+                    showNotice(response.data.message, 'success');
+                    modal.fadeOut();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
+                } else {
+                    console.log('Server returned error:', response.data);
+                    showNotice(response.data.message || 'Wystąpił błąd', 'error');
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error('AJAX Failed - Status:', status, 'Error:', error);
+                console.error('XHR:', xhr);
+                showNotice('Błąd połączenia: ' + error, 'error');
+            })
+            .always(function() {
+                console.log('=== FORM SUBMIT END ===');
+            });
 
         return false;
     });
