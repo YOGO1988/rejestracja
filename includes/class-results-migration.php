@@ -23,8 +23,8 @@ class Race_Results_Migration {
         $this->db = Race_Results_Database::get_instance();
 
         add_action('admin_menu', array($this, 'add_migration_page'), 100);
-        add_action('wp_ajax_race_results_migrate_acf', array($this, 'ajax_migrate_acf'));
-        add_action('wp_ajax_race_results_preview_acf', array($this, 'ajax_preview_acf'));
+        add_action('wp_ajax_race_results_migrate_html', array($this, 'ajax_migrate_html'));
+        add_action('wp_ajax_race_results_preview_html', array($this, 'ajax_preview_html'));
     }
 
     /**
@@ -51,23 +51,24 @@ class Race_Results_Migration {
 
             <div class="migration-instructions">
                 <h2>Instrukcje migracji</h2>
-                <p>Ta strona pomoże Ci przenieść dane z pól ACF do nowej struktury bazy danych.</p>
+                <p>Ta strona pomoże Ci przenieść dane z tabeli HTML w edytorze strony do nowej struktury bazy danych.</p>
                 <p><strong>Przed migracją:</strong></p>
                 <ol>
-                    <li>Podaj nazwę grupy ACF lub ID pola, z którego chcesz migrować dane</li>
+                    <li>Znajdź ID strony zawierającej tabelę z wynikami (np. strona "Wyniki")</li>
+                    <li>Wpisz ID strony poniżej</li>
                     <li>System wyświetli podgląd danych do migracji</li>
                     <li>Sprawdź, czy dane są poprawne</li>
                     <li>Kliknij "Migruj dane" aby przenieść dane do nowej tabeli</li>
                 </ol>
 
-                <h3>Format danych ACF</h3>
-                <p>System automatycznie wykryje i przekonwertuje dane w następujących formatach:</p>
+                <h3>Format danych w tabeli</h3>
+                <p>System automatycznie wykryje i przekonwertuje tabelę HTML z kolumnami:</p>
                 <ul>
-                    <li><strong>Data:</strong> Format daty (YYYY-MM-DD lub DD.MM.YYYY)</li>
-                    <li><strong>Nazwa biegu:</strong> Tekst</li>
+                    <li><strong>Data:</strong> Format daty (DD.MM.YYYY)</li>
+                    <li><strong>Nazwa wydarzenia:</strong> Tekst</li>
                     <li><strong>Miejscowość:</strong> Tekst</li>
-                    <li><strong>Wyniki PDF:</strong> HTML z linkami do PDF (np. <code>&lt;a href="...pdf"&gt;Wyniki 10km&lt;/a&gt;</code>)</li>
-                    <li><strong>Wyniki online:</strong> HTML z linkiem (np. <code>&lt;a href="..."&gt;zobacz&lt;/a&gt;</code>)</li>
+                    <li><strong>Wyniki PDF:</strong> Linki do PDF (np. <code>&lt;a href="...pdf"&gt;Wyniki 10km&lt;/a&gt;</code>)</li>
+                    <li><strong>Wyniki online:</strong> Link (np. <code>&lt;a href="..."&gt;zobacz&lt;/a&gt;</code>)</li>
                 </ul>
             </div>
 
@@ -77,53 +78,14 @@ class Race_Results_Migration {
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="acf-group">Grupa ACF lub Post Type</label>
+                                <label for="page-id">ID strony z wynikami</label>
                             </th>
                             <td>
-                                <input type="text" id="acf-group" name="acf_group" class="regular-text" placeholder="np. group_xxxxx lub post">
-                                <p class="description">Nazwa grupy ACF lub post type, z którego pobrać dane</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="field-date">Pole ACF: Data</label>
-                            </th>
-                            <td>
-                                <input type="text" id="field-date" name="field_date" class="regular-text" placeholder="np. data_biegu">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="field-name">Pole ACF: Nazwa biegu</label>
-                            </th>
-                            <td>
-                                <input type="text" id="field-name" name="field_name" class="regular-text" placeholder="np. nazwa_biegu">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="field-location">Pole ACF: Miejscowość</label>
-                            </th>
-                            <td>
-                                <input type="text" id="field-location" name="field_location" class="regular-text" placeholder="np. miejscowosc">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="field-pdf">Pole ACF: Wyniki PDF</label>
-                            </th>
-                            <td>
-                                <input type="text" id="field-pdf" name="field_pdf" class="regular-text" placeholder="np. wyniki_pdf">
-                                <p class="description">Pole zawierające HTML z linkami do PDF</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                <label for="field-online">Pole ACF: Wyniki online</label>
-                            </th>
-                            <td>
-                                <input type="text" id="field-online" name="field_online" class="regular-text" placeholder="np. wyniki_online">
-                                <p class="description">Pole zawierające HTML z linkiem online</p>
+                                <input type="number" id="page-id" name="page_id" class="regular-text" placeholder="np. 1190">
+                                <p class="description">
+                                    ID strony zawierającej tabelę z wynikami.
+                                    Znajdziesz je w adresie URL podczas edycji strony (np. post=1190)
+                                </p>
                             </td>
                         </tr>
                     </table>
@@ -208,15 +170,17 @@ class Race_Results_Migration {
         <script>
         jQuery(document).ready(function($) {
             $('#preview-migration').on('click', function() {
+                const pageId = $('#page-id').val();
+
+                if (!pageId) {
+                    alert('Podaj ID strony z wynikami');
+                    return;
+                }
+
                 const data = {
-                    action: 'race_results_preview_acf',
+                    action: 'race_results_preview_html',
                     nonce: '<?php echo wp_create_nonce('race_results_migration_nonce'); ?>',
-                    acf_group: $('#acf-group').val(),
-                    field_date: $('#field-date').val(),
-                    field_name: $('#field-name').val(),
-                    field_location: $('#field-location').val(),
-                    field_pdf: $('#field-pdf').val(),
-                    field_online: $('#field-online').val()
+                    page_id: pageId
                 };
 
                 $.ajax({
@@ -240,15 +204,17 @@ class Race_Results_Migration {
                     return;
                 }
 
+                const pageId = $('#page-id').val();
+
+                if (!pageId) {
+                    alert('Podaj ID strony z wynikami');
+                    return;
+                }
+
                 const data = {
-                    action: 'race_results_migrate_acf',
+                    action: 'race_results_migrate_html',
                     nonce: '<?php echo wp_create_nonce('race_results_migration_nonce'); ?>',
-                    acf_group: $('#acf-group').val(),
-                    field_date: $('#field-date').val(),
-                    field_name: $('#field-name').val(),
-                    field_location: $('#field-location').val(),
-                    field_pdf: $('#field-pdf').val(),
-                    field_online: $('#field-online').val()
+                    page_id: pageId
                 };
 
                 $.ajax({
@@ -273,52 +239,56 @@ class Race_Results_Migration {
     }
 
     /**
-     * AJAX: Podgląd danych z ACF
+     * AJAX: Podgląd danych z tabeli HTML
      */
-    public function ajax_preview_acf() {
+    public function ajax_preview_html() {
         check_ajax_referer('race_results_migration_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => 'Brak uprawnień'));
         }
 
-        $acf_group = sanitize_text_field($_POST['acf_group']);
-        $fields = array(
-            'date' => sanitize_text_field($_POST['field_date']),
-            'name' => sanitize_text_field($_POST['field_name']),
-            'location' => sanitize_text_field($_POST['field_location']),
-            'pdf' => sanitize_text_field($_POST['field_pdf']),
-            'online' => sanitize_text_field($_POST['field_online'])
-        );
+        $page_id = intval($_POST['page_id']);
 
-        // Pobierz dane z ACF (przykładowo z postów)
-        $args = array(
-            'post_type' => $acf_group,
-            'posts_per_page' => -1,
-            'post_status' => 'publish'
-        );
-
-        $posts = get_posts($args);
-
-        if (empty($posts)) {
-            wp_send_json_error(array('message' => 'Nie znaleziono postów w grupie: ' . $acf_group));
+        if (!$page_id) {
+            wp_send_json_error(array('message' => 'Nieprawidłowe ID strony'));
         }
 
-        $html = '<p>Znaleziono <strong>' . count($posts) . '</strong> wpisów do migracji:</p>';
+        // Pobierz zawartość strony
+        $post = get_post($page_id);
 
-        foreach ($posts as $post) {
-            $date = get_field($fields['date'], $post->ID);
-            $name = get_field($fields['name'], $post->ID);
-            $location = get_field($fields['location'], $post->ID);
-            $pdf = get_field($fields['pdf'], $post->ID);
-            $online = get_field($fields['online'], $post->ID);
+        if (!$post) {
+            wp_send_json_error(array('message' => 'Nie znaleziono strony o ID: ' . $page_id));
+        }
 
+        // Parsuj tabelę z HTML
+        $rows = $this->parse_html_table($post->post_content);
+
+        if (empty($rows)) {
+            wp_send_json_error(array('message' => 'Nie znaleziono tabeli z wynikami na stronie'));
+        }
+
+        $html = '<p>Znaleziono <strong>' . count($rows) . '</strong> wierszy do migracji:</p>';
+
+        foreach ($rows as $row) {
             $html .= '<div class="preview-item">';
-            $html .= '<h4>' . esc_html($name) . '</h4>';
-            $html .= '<p><strong>Data:</strong> ' . esc_html($date) . '</p>';
-            $html .= '<p><strong>Miejscowość:</strong> ' . esc_html($location) . '</p>';
-            $html .= '<p><strong>Wyniki PDF (HTML):</strong> ' . esc_html(substr($pdf, 0, 100)) . '...</p>';
-            $html .= '<p><strong>Wyniki online (HTML):</strong> ' . esc_html(substr($online, 0, 100)) . '...</p>';
+            $html .= '<h4>' . esc_html($row['name']) . '</h4>';
+            $html .= '<p><strong>Data:</strong> ' . esc_html($row['date']) . '</p>';
+            $html .= '<p><strong>Miejscowość:</strong> ' . esc_html($row['location']) . '</p>';
+            $html .= '<p><strong>Liczba plików PDF:</strong> ' . count($row['pdf_files']) . '</p>';
+
+            if (!empty($row['pdf_files'])) {
+                $html .= '<p><strong>Pliki PDF:</strong></p><ul>';
+                foreach ($row['pdf_files'] as $pdf) {
+                    $html .= '<li>' . esc_html($pdf['button_text']) . ' - ' . esc_html($pdf['url']) . '</li>';
+                }
+                $html .= '</ul>';
+            }
+
+            if (!empty($row['online_url'])) {
+                $html .= '<p><strong>Link online:</strong> ' . esc_html($row['online_url']) . '</p>';
+            }
+
             $html .= '</div>';
         }
 
@@ -326,67 +296,64 @@ class Race_Results_Migration {
     }
 
     /**
-     * AJAX: Migracja danych z ACF
+     * AJAX: Migracja danych z tabeli HTML
      */
-    public function ajax_migrate_acf() {
+    public function ajax_migrate_html() {
         check_ajax_referer('race_results_migration_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => 'Brak uprawnień'));
         }
 
-        $acf_group = sanitize_text_field($_POST['acf_group']);
-        $fields = array(
-            'date' => sanitize_text_field($_POST['field_date']),
-            'name' => sanitize_text_field($_POST['field_name']),
-            'location' => sanitize_text_field($_POST['field_location']),
-            'pdf' => sanitize_text_field($_POST['field_pdf']),
-            'online' => sanitize_text_field($_POST['field_online'])
-        );
+        $page_id = intval($_POST['page_id']);
 
-        // Pobierz dane z ACF
-        $args = array(
-            'post_type' => $acf_group,
-            'posts_per_page' => -1,
-            'post_status' => 'publish'
-        );
+        if (!$page_id) {
+            wp_send_json_error(array('message' => 'Nieprawidłowe ID strony'));
+        }
 
-        $posts = get_posts($args);
+        // Pobierz zawartość strony
+        $post = get_post($page_id);
 
-        if (empty($posts)) {
-            wp_send_json_error(array('message' => 'Nie znaleziono postów do migracji'));
+        if (!$post) {
+            wp_send_json_error(array('message' => 'Nie znaleziono strony'));
+        }
+
+        // Parsuj tabelę z HTML
+        $rows = $this->parse_html_table($post->post_content);
+
+        if (empty($rows)) {
+            wp_send_json_error(array('message' => 'Nie znaleziono tabeli z wynikami'));
         }
 
         $migrated = 0;
         $errors = 0;
 
-        foreach ($posts as $post) {
-            $date = get_field($fields['date'], $post->ID);
-            $name = get_field($fields['name'], $post->ID);
-            $location = get_field($fields['location'], $post->ID);
-            $pdf_html = get_field($fields['pdf'], $post->ID);
-            $online_html = get_field($fields['online'], $post->ID);
-
-            // Parsuj HTML z linkami PDF
-            $pdf_files = $this->parse_pdf_links($pdf_html);
-
-            // Parsuj link online
-            $online_url = $this->parse_online_link($online_html);
-
+        foreach ($rows as $row) {
             // Konwersja daty na format YYYY-MM-DD
-            $formatted_date = $this->format_date($date);
+            $formatted_date = $this->format_date($row['date']);
 
-            if (empty($formatted_date) || empty($name) || empty($location)) {
+            if (empty($formatted_date) || empty($row['name']) || empty($row['location'])) {
                 $errors++;
                 continue;
             }
 
+            // Filtruj pliki PDF - usuń te które nie mają file_id
+            $valid_pdf_files = array();
+            foreach ($row['pdf_files'] as $pdf) {
+                if (!empty($pdf['file_id'])) {
+                    $valid_pdf_files[] = array(
+                        'file_id' => $pdf['file_id'],
+                        'button_text' => $pdf['button_text']
+                    );
+                }
+            }
+
             $data = array(
                 'race_date' => $formatted_date,
-                'race_name' => $name,
-                'location' => $location,
-                'results_pdf' => $pdf_files,
-                'results_online_url' => $online_url
+                'race_name' => $row['name'],
+                'location' => $row['location'],
+                'results_pdf' => $valid_pdf_files,
+                'results_online_url' => $row['online_url']
             );
 
             $result = $this->db->add_result($data);
@@ -407,6 +374,70 @@ class Race_Results_Migration {
     }
 
     /**
+     * Parsuj tabelę HTML i wyciągnij dane
+     */
+    private function parse_html_table($html) {
+        $rows_data = array();
+
+        // Użyj DOMDocument do parsowania HTML
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+        libxml_clear_errors();
+
+        // Znajdź wszystkie wiersze tabeli
+        $xpath = new DOMXPath($dom);
+        $table_rows = $xpath->query('//table//tr');
+
+        if ($table_rows->length === 0) {
+            return array();
+        }
+
+        // Pomiń pierwszy wiersz (nagłówki)
+        foreach ($table_rows as $index => $row) {
+            if ($index === 0) {
+                continue; // Pomiń nagłówki
+            }
+
+            $cells = $row->getElementsByTagName('td');
+
+            if ($cells->length < 3) {
+                continue; // Pomiń wiersze z mniej niż 3 kolumnami
+            }
+
+            // Wyciągnij dane z komórek
+            // Zakładamy kolejność: Data (0), Nazwa (1), Miejscowość (2), PDF (3), Online (4)
+            $date = trim($cells->item(0)->textContent);
+            $name = trim($cells->item(1)->textContent);
+            $location = trim($cells->item(2)->textContent);
+
+            // Wyniki PDF - wyciągnij wszystkie linki
+            $pdf_files = array();
+            if ($cells->length > 3) {
+                $pdf_cell_html = $dom->saveHTML($cells->item(3));
+                $pdf_files = $this->parse_pdf_links($pdf_cell_html);
+            }
+
+            // Wyniki online - wyciągnij link
+            $online_url = '';
+            if ($cells->length > 4) {
+                $online_cell_html = $dom->saveHTML($cells->item(4));
+                $online_url = $this->parse_online_link($online_cell_html);
+            }
+
+            $rows_data[] = array(
+                'date' => $date,
+                'name' => $name,
+                'location' => $location,
+                'pdf_files' => $pdf_files,
+                'online_url' => $online_url
+            );
+        }
+
+        return $rows_data;
+    }
+
+    /**
      * Parsuj linki PDF z HTML
      */
     private function parse_pdf_links($html) {
@@ -417,11 +448,16 @@ class Race_Results_Migration {
         $pdf_files = array();
 
         // Regex do znalezienia wszystkich linków do PDF
-        preg_match_all('/<a[^>]+href=["\']([^"\']+\.pdf)["\'][^>]*>([^<]+)<\/a>/i', $html, $matches, PREG_SET_ORDER);
+        preg_match_all('/<a[^>]+href=["\']([^"\']+)["\'][^>]*>([^<]+)<\/a>/i', $html, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
             $url = $match[1];
             $text = strip_tags($match[2]);
+
+            // Pomiń linki które nie są PDF
+            if (stripos($url, '.pdf') === false) {
+                continue;
+            }
 
             // Sprawdź czy plik jest w WordPress Media Library
             $attachment_id = attachment_url_to_postid($url);
@@ -429,7 +465,8 @@ class Race_Results_Migration {
             if ($attachment_id) {
                 $pdf_files[] = array(
                     'file_id' => $attachment_id,
-                    'button_text' => $text
+                    'button_text' => $text,
+                    'url' => $url
                 );
             } else {
                 // Jeśli plik nie jest w bibliotece, spróbuj go zaimportować
@@ -437,7 +474,15 @@ class Race_Results_Migration {
                 if ($attachment_id) {
                     $pdf_files[] = array(
                         'file_id' => $attachment_id,
-                        'button_text' => $text
+                        'button_text' => $text,
+                        'url' => $url
+                    );
+                } else {
+                    // Jeśli import nie udał się, zapisz URL dla informacji
+                    $pdf_files[] = array(
+                        'file_id' => 0,
+                        'button_text' => $text,
+                        'url' => $url
                     );
                 }
             }

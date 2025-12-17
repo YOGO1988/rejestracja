@@ -111,7 +111,7 @@ class Race_Results_Frontend {
                                 <th class="race-col-name" data-sort="name">Nazwa Biegu</th>
                                 <th class="race-col-location" data-sort="location">Miejscowość</th>
                                 <th class="race-col-pdf">Wyniki pdf</th>
-                                <th class="race-col-online">Wyniki online</th>
+                                <th class="race-col-online">Na żywo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,7 +150,7 @@ class Race_Results_Frontend {
                                             <span class="race-na">-</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="race-col-online" data-label="Wyniki online">
+                                    <td class="race-col-online" data-label="Na żywo">
                                         <?php if (!empty($result->results_online_url)): ?>
                                             <a href="<?php echo esc_url($result->results_online_url); ?>"
                                                target="_blank"

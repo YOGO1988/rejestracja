@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
                             <span class="dashicons dashicons-media-document"></span>
                             ${fileName || 'Wybierz plik PDF'}
                         </button>
-                        <input type="text" class="pdf-button-text" placeholder="Nazwa przycisku (np. Wyniki 10km)" value="${buttonText}" required>
+                        <input type="text" class="pdf-button-text" placeholder="Nazwa przycisku (np. Wyniki 10km)" value="${buttonText}">
                     </div>
                     <button type="button" class="button remove-pdf-field" title="Usuń">
                         <span class="dashicons dashicons-no-alt"></span>
@@ -144,6 +144,22 @@ jQuery(document).ready(function($) {
     // Zapisz wynik (dodaj/edytuj)
     form.on('submit', function(e) {
         e.preventDefault();
+
+        // Walidacja pól PDF - jeśli któreś pole ma tylko plik bez nazwy lub nazwę bez pliku, pokaż błąd
+        let validationError = false;
+        $('.pdf-field-row').each(function() {
+            const fileId = $(this).find('.pdf-file-id').val();
+            const buttonText = $(this).find('.pdf-button-text').val().trim();
+
+            if ((fileId && !buttonText) || (!fileId && buttonText)) {
+                validationError = true;
+            }
+        });
+
+        if (validationError) {
+            alert('Dla każdego pliku PDF musisz podać zarówno plik jak i nazwę przycisku, lub usuń niepełne pole.');
+            return;
+        }
 
         const pdfFiles = collectPdfFiles();
 

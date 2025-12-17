@@ -71,9 +71,9 @@ if (!defined('ABSPATH')) {
                 </div>
 
                 <div class="form-group">
-                    <label for="results-online-url">Link do wyników online</label>
+                    <label for="results-online-url">Link do wyników na żywo</label>
                     <input type="url" id="results-online-url" name="results_online_url" placeholder="https://">
-                    <p class="description">Link do wyników online (np. Athlinks, Datasport, itp.)</p>
+                    <p class="description">Link do wyników na żywo podczas biegu (np. Athlinks, Datasport, itp.)</p>
                 </div>
 
                 <div class="form-actions">
@@ -94,7 +94,7 @@ if (!defined('ABSPATH')) {
                     <th class="column-name">Nazwa biegu</th>
                     <th class="column-location">Miejscowość</th>
                     <th class="column-pdf">Wyniki PDF</th>
-                    <th class="column-online">Wyniki online</th>
+                    <th class="column-online">Na żywo</th>
                     <th class="column-actions">Akcje</th>
                 </tr>
             </thead>
