@@ -53,6 +53,7 @@ class Race_Results {
         require_once RACE_RESULTS_PLUGIN_DIR . 'includes/class-results-admin.php';
         require_once RACE_RESULTS_PLUGIN_DIR . 'includes/class-results-frontend.php';
         require_once RACE_RESULTS_PLUGIN_DIR . 'includes/class-results-migration.php';
+        require_once RACE_RESULTS_PLUGIN_DIR . 'includes/class-results-import-page.php';
     }
 
     /**
@@ -74,6 +75,7 @@ class Race_Results {
         Race_Results_Admin::get_instance();
         Race_Results_Frontend::get_instance();
         Race_Results_Migration::get_instance();
+        Race_Results_Import_Page::get_instance();
     }
 
     /**
