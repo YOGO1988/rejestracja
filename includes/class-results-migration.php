@@ -25,6 +25,7 @@ class Race_Results_Migration {
         add_action('admin_menu', array($this, 'add_migration_page'), 100);
         add_action('wp_ajax_race_results_migrate_html', array($this, 'ajax_migrate_html'));
         add_action('wp_ajax_race_results_preview_html', array($this, 'ajax_preview_html'));
+        add_action('wp_ajax_race_results_debug_page', array($this, 'ajax_debug_page'));
     }
 
     /**
