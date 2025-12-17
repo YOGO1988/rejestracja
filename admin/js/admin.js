@@ -116,6 +116,8 @@ jQuery(document).ready(function($) {
     $(document).on('click', '.edit-race', function() {
         const raceId = $(this).data('id');
 
+        console.log('=== EDIT RACE CLICKED === ID:', raceId);
+
         $.post(raceRegAdmin.ajaxUrl, {
             action: 'race_reg_get_race',
             nonce: raceRegAdmin.nonce,
@@ -124,16 +126,29 @@ jQuery(document).ready(function($) {
             if (response.success) {
                 const race = response.data.race;
 
+                console.log('Race data:', race);
+
+                // RESET formularza PRZED wypełnieniem
+                form[0].reset();
+
+                // Wypełnienie pól tekstowych
                 $('#race-id').val(race.id);
                 $('#race-date').val(race.race_date);
                 $('#race-name').val(race.race_name);
                 $('#location').val(race.location);
                 $('#distance').val(race.distance);
-                $('#website-url').val(race.website_url);
-                $('#registration-url').val(race.registration_url);
-                $('#is-pinned').prop('checked', race.is_pinned == 1);
-                $('#is-limit-reached').prop('checked', race.is_limit_reached == 1);
-                $('#is-coming-soon').prop('checked', race.is_coming_soon == 1);
+                $('#website-url').val(race.website_url || '');
+                $('#registration-url').val(race.registration_url || '');
+
+                // Ustawienie checkboxów - konwersja na boolean
+                $('#is-pinned').prop('checked', parseInt(race.is_pinned) === 1);
+                $('#is-limit-reached').prop('checked', parseInt(race.is_limit_reached) === 1);
+                $('#is-coming-soon').prop('checked', parseInt(race.is_coming_soon) === 1);
+
+                console.log('Checkboxes set:');
+                console.log('  is_pinned:', race.is_pinned, '→', $('#is-pinned').prop('checked'));
+                console.log('  is_limit_reached:', race.is_limit_reached, '→', $('#is-limit-reached').prop('checked'));
+                console.log('  is_coming_soon:', race.is_coming_soon, '→', $('#is-coming-soon').prop('checked'));
 
                 $('#form-title').text('Edytuj zawody');
                 modal.fadeIn();
