@@ -117,7 +117,8 @@ class Race_Registration_Admin {
             'website_url' => esc_url_raw($_POST['website_url']),
             'registration_url' => esc_url_raw($_POST['registration_url']),
             'is_pinned' => isset($_POST['is_pinned']) ? 1 : 0,
-            'is_limit_reached' => isset($_POST['is_limit_reached']) ? 1 : 0
+            'is_limit_reached' => isset($_POST['is_limit_reached']) ? 1 : 0,
+            'is_coming_soon' => isset($_POST['is_coming_soon']) ? 1 : 0
         );
 
         $result = $this->db->add_race($data);
@@ -152,7 +153,8 @@ class Race_Registration_Admin {
             'website_url' => esc_url_raw($_POST['website_url']),
             'registration_url' => esc_url_raw($_POST['registration_url']),
             'is_pinned' => isset($_POST['is_pinned']) ? 1 : 0,
-            'is_limit_reached' => isset($_POST['is_limit_reached']) ? 1 : 0
+            'is_limit_reached' => isset($_POST['is_limit_reached']) ? 1 : 0,
+            'is_coming_soon' => isset($_POST['is_coming_soon']) ? 1 : 0
         );
 
         $result = $this->db->update_race($id, $data);

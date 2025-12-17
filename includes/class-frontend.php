@@ -140,7 +140,9 @@ class Race_Registration_Frontend {
                                         <?php endif; ?>
                                     </td>
                                     <td class="race-col-registration" data-label="Zapisy">
-                                        <?php if ($race->is_limit_reached): ?>
+                                        <?php if ($race->is_coming_soon): ?>
+                                            <span class="race-coming-soon-badge">Wkrótce uruchomimy zapisy</span>
+                                        <?php elseif ($race->is_limit_reached): ?>
                                             <span class="race-limit-badge">Limit osiągnięty</span>
                                         <?php elseif (!empty($race->registration_url)): ?>
                                             <a href="<?php echo esc_url($race->registration_url); ?>"

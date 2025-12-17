@@ -89,6 +89,13 @@ if (!defined('ABSPATH')) {
                     </label>
                 </div>
 
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="is-coming-soon" name="is_coming_soon" value="1">
+                        Zawody wkrótce (wkrótce uruchomimy zapisy)
+                    </label>
+                </div>
+
                 <div class="form-actions">
                     <button type="submit" class="button button-primary">Zapisz</button>
                     <button type="button" class="button" id="cancel-form">Anuluj</button>

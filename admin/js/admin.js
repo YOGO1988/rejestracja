@@ -43,7 +43,8 @@ jQuery(document).ready(function($) {
             website_url: $('#website-url').val(),
             registration_url: $('#registration-url').val(),
             is_pinned: $('#is-pinned').is(':checked') ? 1 : 0,
-            is_limit_reached: $('#is-limit-reached').is(':checked') ? 1 : 0
+            is_limit_reached: $('#is-limit-reached').is(':checked') ? 1 : 0,
+            is_coming_soon: $('#is-coming-soon').is(':checked') ? 1 : 0
         };
 
         $.post(raceRegAdmin.ajaxUrl, data, function(response) {
@@ -78,6 +79,7 @@ jQuery(document).ready(function($) {
                 $('#registration-url').val(race.registration_url);
                 $('#is-pinned').prop('checked', race.is_pinned == 1);
                 $('#is-limit-reached').prop('checked', race.is_limit_reached == 1);
+                $('#is-coming-soon').prop('checked', race.is_coming_soon == 1);
 
                 $('#form-title').text('Edytuj zawody');
                 modal.fadeIn();

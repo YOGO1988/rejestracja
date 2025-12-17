@@ -180,6 +180,9 @@
 
 .column-name {
     width: auto;
+    min-width: 200px;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .column-location {

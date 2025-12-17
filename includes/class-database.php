@@ -44,6 +44,7 @@ class Race_Registration_Database {
             registration_url varchar(500) DEFAULT '',
             is_pinned tinyint(1) DEFAULT 0,
             is_limit_reached tinyint(1) DEFAULT 0,
+            is_coming_soon tinyint(1) DEFAULT 0,
             sort_order int(11) DEFAULT 0,
             is_active tinyint(1) DEFAULT 1,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -140,10 +141,11 @@ class Race_Registration_Database {
                 'registration_url' => esc_url_raw($data['registration_url']),
                 'is_pinned' => isset($data['is_pinned']) ? intval($data['is_pinned']) : 0,
                 'is_limit_reached' => isset($data['is_limit_reached']) ? intval($data['is_limit_reached']) : 0,
+                'is_coming_soon' => isset($data['is_coming_soon']) ? intval($data['is_coming_soon']) : 0,
                 'sort_order' => $data['sort_order'],
                 'is_active' => 1
             ),
-            array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d')
+            array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d')
         );
 
         return $result ? $wpdb->insert_id : false;
@@ -188,6 +190,10 @@ class Race_Registration_Database {
         }
         if (isset($data['is_limit_reached'])) {
             $update_data['is_limit_reached'] = intval($data['is_limit_reached']);
+            $format[] = '%d';
+        }
+        if (isset($data['is_coming_soon'])) {
+            $update_data['is_coming_soon'] = intval($data['is_coming_soon']);
             $format[] = '%d';
         }
         if (isset($data['sort_order'])) {
