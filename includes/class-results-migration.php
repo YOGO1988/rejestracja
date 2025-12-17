@@ -262,14 +262,25 @@ class Race_Results_Migration {
             wp_send_json_error(array('message' => 'Nie znaleziono strony o ID: ' . $page_id));
         }
 
-        // Parsuj tabelę z HTML
-        $rows = $this->parse_html_table($post->post_content);
+        // Najpierw sprawdź czy są dane w ACF Table Field
+        $acf_data = get_post_meta($page_id, 'tabela_wynikow', true);
 
-        if (empty($rows)) {
-            wp_send_json_error(array('message' => 'Nie znaleziono tabeli z wynikami na stronie'));
+        if (!empty($acf_data)) {
+            // Parsuj dane z ACF
+            $rows = $this->parse_acf_table($acf_data);
+            $source = 'ACF Table Field';
+        } else {
+            // Fallback do parsowania HTML
+            $rows = $this->parse_html_table($post->post_content);
+            $source = 'HTML';
         }
 
-        $html = '<p>Znaleziono <strong>' . count($rows) . '</strong> wierszy do migracji:</p>';
+        if (empty($rows)) {
+            wp_send_json_error(array('message' => 'Nie znaleziono tabeli z wynikami na stronie. Sprawdź czy pole ACF "tabela_wynikow" istnieje lub czy jest tabela HTML w zawartości.'));
+        }
+
+        $html = '<p>Źródło danych: <strong>' . esc_html($source) . '</strong></p>';
+        $html .= '<p>Znaleziono <strong>' . count($rows) . '</strong> wierszy do migracji:</p>';
 
         foreach ($rows as $row) {
             $html .= '<div class="preview-item">';
@@ -319,8 +330,16 @@ class Race_Results_Migration {
             wp_send_json_error(array('message' => 'Nie znaleziono strony'));
         }
 
-        // Parsuj tabelę z HTML
-        $rows = $this->parse_html_table($post->post_content);
+        // Najpierw sprawdź czy są dane w ACF Table Field
+        $acf_data = get_post_meta($page_id, 'tabela_wynikow', true);
+
+        if (!empty($acf_data)) {
+            // Parsuj dane z ACF
+            $rows = $this->parse_acf_table($acf_data);
+        } else {
+            // Fallback do parsowania HTML
+            $rows = $this->parse_html_table($post->post_content);
+        }
 
         if (empty($rows)) {
             wp_send_json_error(array('message' => 'Nie znaleziono tabeli z wynikami'));
@@ -372,6 +391,68 @@ class Race_Results_Migration {
         }
 
         wp_send_json_success(array('message' => $message));
+    }
+
+    /**
+     * Parsuj dane z ACF Table Field
+     */
+    private function parse_acf_table($acf_data) {
+        if (empty($acf_data)) {
+            return array();
+        }
+
+        // Deserializuj dane ACF
+        $table_data = @unserialize($acf_data);
+
+        if ($table_data === false || !is_array($table_data)) {
+            return array();
+        }
+
+        $rows_data = array();
+
+        // ACF Table Field ma strukturę:
+        // 'h' => nagłówki (headers)
+        // 'b' => ciało tabeli (body) - wiersze z danymi
+        // Każdy wiersz to tablica z indeksami 0-4 (kolumny)
+
+        if (!isset($table_data['b']) || !is_array($table_data['b'])) {
+            return array();
+        }
+
+        foreach ($table_data['b'] as $row) {
+            if (!is_array($row) || count($row) < 3) {
+                continue;
+            }
+
+            // Wyciągnij wartości z komórek
+            // Struktura: i:0 => Data, i:1 => Nazwa, i:2 => Miejscowość, i:3 => PDF, i:4 => Online
+            $date_cell = isset($row[0]['c']) ? $row[0]['c'] : '';
+            $name_cell = isset($row[1]['c']) ? $row[1]['c'] : '';
+            $location_cell = isset($row[2]['c']) ? $row[2]['c'] : '';
+            $pdf_cell = isset($row[3]['c']) ? $row[3]['c'] : '';
+            $online_cell = isset($row[4]['c']) ? $row[4]['c'] : '';
+
+            // Usuń 'r' z końca daty jeśli istnieje (np. "14.12.2025r" -> "14.12.2025")
+            $date = trim(str_replace('r', '', $date_cell));
+            $name = trim($name_cell);
+            $location = trim($location_cell);
+
+            // Parsuj linki PDF z komórki
+            $pdf_files = $this->parse_pdf_links($pdf_cell);
+
+            // Parsuj link online
+            $online_url = $this->parse_online_link($online_cell);
+
+            $rows_data[] = array(
+                'date' => $date,
+                'name' => $name,
+                'location' => $location,
+                'pdf_files' => $pdf_files,
+                'online_url' => $online_url
+            );
+        }
+
+        return $rows_data;
     }
 
     /**
@@ -448,8 +529,9 @@ class Race_Results_Migration {
 
         $pdf_files = array();
 
-        // Regex do znalezienia wszystkich linków do PDF
-        preg_match_all('/<a[^>]+href=["\']([^"\']+)["\'][^>]*>([^<]+)<\/a>/i', $html, $matches, PREG_SET_ORDER);
+        // Regex do znalezienia wszystkich linków (obsługuje zarówno " jak i ')
+        // Dopasowuje <a href='...' lub <a href="..."
+        preg_match_all('/<a[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>([^<]+)<\/a>/i', $html, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
             $url = $match[1];
@@ -500,8 +582,8 @@ class Race_Results_Migration {
             return '';
         }
 
-        // Regex do znalezienia linku
-        preg_match('/<a[^>]+href=["\']([^"\']+)["\'][^>]*>/i', $html, $matches);
+        // Regex do znalezienia linku (obsługuje zarówno " jak i ')
+        preg_match('/<a[^>]+href=[\'"]([^\'"]+)[\'"][^>]*>/i', $html, $matches);
 
         return isset($matches[1]) ? $matches[1] : '';
     }
