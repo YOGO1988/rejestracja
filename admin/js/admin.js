@@ -84,6 +84,14 @@ jQuery(document).ready(function($) {
             is_coming_soon: $('#is-coming-soon').is(':checked') ? 1 : 0
         };
 
+        console.log('=== CHECKBOX VALUES ===');
+        console.log('is_pinned checkbox checked:', $('#is-pinned').is(':checked'));
+        console.log('is_pinned value sent:', data.is_pinned);
+        console.log('is_limit_reached checkbox checked:', $('#is-limit-reached').is(':checked'));
+        console.log('is_limit_reached value sent:', data.is_limit_reached);
+        console.log('is_coming_soon checkbox checked:', $('#is-coming-soon').is(':checked'));
+        console.log('is_coming_soon value sent:', data.is_coming_soon);
+        console.log('=== FULL DATA ===');
         console.log('Sending AJAX request with data:', data);
 
         $.post(raceRegAdmin.ajaxUrl, data)
@@ -141,14 +149,29 @@ jQuery(document).ready(function($) {
                 $('#registration-url').val(race.registration_url || '');
 
                 // Ustawienie checkboxów - konwersja na boolean
-                $('#is-pinned').prop('checked', parseInt(race.is_pinned) === 1);
-                $('#is-limit-reached').prop('checked', parseInt(race.is_limit_reached) === 1);
-                $('#is-coming-soon').prop('checked', parseInt(race.is_coming_soon) === 1);
+                console.log('=== SETTING CHECKBOXES ===');
+                console.log('Raw values from server:');
+                console.log('  is_pinned:', race.is_pinned, 'type:', typeof race.is_pinned);
+                console.log('  is_limit_reached:', race.is_limit_reached, 'type:', typeof race.is_limit_reached);
+                console.log('  is_coming_soon:', race.is_coming_soon, 'type:', typeof race.is_coming_soon);
 
-                console.log('Checkboxes set:');
-                console.log('  is_pinned:', race.is_pinned, '→', $('#is-pinned').prop('checked'));
-                console.log('  is_limit_reached:', race.is_limit_reached, '→', $('#is-limit-reached').prop('checked'));
-                console.log('  is_coming_soon:', race.is_coming_soon, '→', $('#is-coming-soon').prop('checked'));
+                const isPinnedChecked = parseInt(race.is_pinned) === 1;
+                const isLimitChecked = parseInt(race.is_limit_reached) === 1;
+                const isComingSoonChecked = parseInt(race.is_coming_soon) === 1;
+
+                console.log('Converted to boolean:');
+                console.log('  is_pinned:', isPinnedChecked);
+                console.log('  is_limit_reached:', isLimitChecked);
+                console.log('  is_coming_soon:', isComingSoonChecked);
+
+                $('#is-pinned').prop('checked', isPinnedChecked);
+                $('#is-limit-reached').prop('checked', isLimitChecked);
+                $('#is-coming-soon').prop('checked', isComingSoonChecked);
+
+                console.log('After setting:');
+                console.log('  is_pinned checkbox:', $('#is-pinned').prop('checked'));
+                console.log('  is_limit_reached checkbox:', $('#is-limit-reached').prop('checked'));
+                console.log('  is_coming_soon checkbox:', $('#is-coming-soon').prop('checked'));
 
                 $('#form-title').text('Edytuj zawody');
                 modal.fadeIn();
@@ -163,27 +186,60 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!confirm(raceRegAdmin.strings.confirmDelete)) {
+        console.log('=== DELETE RACE CLICKED ===');
+        console.log('Button element:', this);
+        console.log('Event:', e);
+
+        const $button = $(this);
+        const raceId = $button.data('id');
+        const row = $button.closest('tr');
+
+        console.log('Race ID:', raceId);
+        console.log('Row found:', row.length);
+
+        // Sprawdź czy button jest już w trakcie operacji
+        if ($button.hasClass('processing')) {
+            console.log('Button already processing, ignoring click');
             return false;
         }
 
-        const raceId = $(this).data('id');
-        const row = $(this).closest('tr');
+        if (!confirm(raceRegAdmin.strings.confirmDelete)) {
+            console.log('Delete cancelled by user');
+            return false;
+        }
+
+        // Zablokuj button na czas operacji
+        $button.addClass('processing').css('opacity', '0.5');
+        console.log('Sending delete AJAX request...');
 
         $.post(raceRegAdmin.ajaxUrl, {
             action: 'race_reg_delete_race',
             nonce: raceRegAdmin.nonce,
             id: raceId
-        }, function(response) {
+        })
+        .done(function(response) {
+            console.log('Delete AJAX response:', response);
             if (response.success) {
+                console.log('Delete successful, removing row');
                 row.fadeOut(300, function() {
                     $(this).remove();
                     checkEmptyTable();
                 });
                 showNotice(response.data.message, 'success');
             } else {
-                showNotice(response.data.message, 'error');
+                console.error('Delete failed:', response.data);
+                showNotice(response.data.message || 'Błąd usuwania', 'error');
+                $button.removeClass('processing').css('opacity', '1');
             }
+        })
+        .fail(function(xhr, status, error) {
+            console.error('Delete AJAX failed:', status, error);
+            console.error('XHR:', xhr);
+            showNotice('Błąd połączenia: ' + error, 'error');
+            $button.removeClass('processing').css('opacity', '1');
+        })
+        .always(function() {
+            console.log('=== DELETE RACE END ===');
         });
 
         return false;
@@ -194,14 +250,33 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         e.stopPropagation();
 
-        const raceId = $(this).data('id');
-        const row = $(this).closest('tr');
+        console.log('=== PIN RACE CLICKED ===');
+        console.log('Button element:', this);
+
+        const $button = $(this);
+        const raceId = $button.data('id');
+        const row = $button.closest('tr');
+
+        console.log('Race ID:', raceId);
+        console.log('Row found:', row.length);
+
+        // Sprawdź czy button jest już w trakcie operacji
+        if ($button.hasClass('processing')) {
+            console.log('Button already processing, ignoring click');
+            return false;
+        }
+
+        // Zablokuj button na czas operacji
+        $button.addClass('processing').css('opacity', '0.5');
+        console.log('Sending pin toggle AJAX request...');
 
         $.post(raceRegAdmin.ajaxUrl, {
             action: 'race_reg_toggle_pin',
             nonce: raceRegAdmin.nonce,
             id: raceId
-        }, function(response) {
+        })
+        .done(function(response) {
+            console.log('Pin toggle AJAX response:', response);
             if (response.success) {
                 if (response.data.is_pinned) {
                     row.addClass('pinned-row');
@@ -212,8 +287,18 @@ jQuery(document).ready(function($) {
                 }
                 showNotice(response.data.message, 'success');
             } else {
-                showNotice(response.data.message, 'error');
+                console.error('Pin toggle failed:', response.data);
+                showNotice(response.data.message || 'Błąd przypinania', 'error');
             }
+        })
+        .fail(function(xhr, status, error) {
+            console.error('Pin toggle AJAX failed:', status, error);
+            console.error('XHR:', xhr);
+            showNotice('Błąd połączenia: ' + error, 'error');
+        })
+        .always(function() {
+            $button.removeClass('processing').css('opacity', '1');
+            console.log('=== PIN RACE END ===');
         });
 
         return false;
@@ -224,14 +309,33 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         e.stopPropagation();
 
-        const raceId = $(this).data('id');
-        const row = $(this).closest('tr');
+        console.log('=== TOGGLE LIMIT CLICKED ===');
+        console.log('Button element:', this);
+
+        const $button = $(this);
+        const raceId = $button.data('id');
+        const row = $button.closest('tr');
+
+        console.log('Race ID:', raceId);
+        console.log('Row found:', row.length);
+
+        // Sprawdź czy button jest już w trakcie operacji
+        if ($button.hasClass('processing')) {
+            console.log('Button already processing, ignoring click');
+            return false;
+        }
+
+        // Zablokuj button na czas operacji
+        $button.addClass('processing').css('opacity', '0.5');
+        console.log('Sending limit toggle AJAX request...');
 
         $.post(raceRegAdmin.ajaxUrl, {
             action: 'race_reg_toggle_limit',
             nonce: raceRegAdmin.nonce,
             id: raceId
-        }, function(response) {
+        })
+        .done(function(response) {
+            console.log('Limit toggle AJAX response:', response);
             if (response.success) {
                 const statusBadge = row.find('.status-badge');
                 if (response.data.is_limit_reached) {
@@ -241,8 +345,18 @@ jQuery(document).ready(function($) {
                 }
                 showNotice(response.data.message, 'success');
             } else {
-                showNotice(response.data.message, 'error');
+                console.error('Limit toggle failed:', response.data);
+                showNotice(response.data.message || 'Błąd zmiany limitu', 'error');
             }
+        })
+        .fail(function(xhr, status, error) {
+            console.error('Limit toggle AJAX failed:', status, error);
+            console.error('XHR:', xhr);
+            showNotice('Błąd połączenia: ' + error, 'error');
+        })
+        .always(function() {
+            $button.removeClass('processing').css('opacity', '1');
+            console.log('=== TOGGLE LIMIT END ===');
         });
 
         return false;

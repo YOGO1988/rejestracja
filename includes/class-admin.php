@@ -109,6 +109,12 @@ class Race_Registration_Admin {
             wp_send_json_error(array('message' => 'Brak uprawnień'));
         }
 
+        error_log('=== ADD RACE START ===');
+        error_log('POST data: ' . print_r($_POST, true));
+        error_log('is_pinned raw: ' . (isset($_POST['is_pinned']) ? $_POST['is_pinned'] : 'NOT SET'));
+        error_log('is_limit_reached raw: ' . (isset($_POST['is_limit_reached']) ? $_POST['is_limit_reached'] : 'NOT SET'));
+        error_log('is_coming_soon raw: ' . (isset($_POST['is_coming_soon']) ? $_POST['is_coming_soon'] : 'NOT SET'));
+
         $data = array(
             'race_date' => sanitize_text_field($_POST['race_date']),
             'race_name' => sanitize_text_field($_POST['race_name']),
@@ -116,10 +122,13 @@ class Race_Registration_Admin {
             'distance' => sanitize_text_field($_POST['distance']),
             'website_url' => esc_url_raw($_POST['website_url']),
             'registration_url' => esc_url_raw($_POST['registration_url']),
-            'is_pinned' => isset($_POST['is_pinned']) ? 1 : 0,
-            'is_limit_reached' => isset($_POST['is_limit_reached']) ? 1 : 0,
-            'is_coming_soon' => isset($_POST['is_coming_soon']) ? 1 : 0
+            'is_pinned' => isset($_POST['is_pinned']) && intval($_POST['is_pinned']) === 1 ? 1 : 0,
+            'is_limit_reached' => isset($_POST['is_limit_reached']) && intval($_POST['is_limit_reached']) === 1 ? 1 : 0,
+            'is_coming_soon' => isset($_POST['is_coming_soon']) && intval($_POST['is_coming_soon']) === 1 ? 1 : 0
         );
+
+        error_log('Data to be saved: ' . print_r($data, true));
+        error_log('=== ADD RACE END ===');
 
         $result = $this->db->add_race($data);
 
@@ -147,6 +156,10 @@ class Race_Registration_Admin {
 
         error_log('=== UPDATE RACE START ===');
         error_log('Race ID: ' . $id);
+        error_log('POST data: ' . print_r($_POST, true));
+        error_log('is_pinned raw: ' . (isset($_POST['is_pinned']) ? $_POST['is_pinned'] : 'NOT SET'));
+        error_log('is_limit_reached raw: ' . (isset($_POST['is_limit_reached']) ? $_POST['is_limit_reached'] : 'NOT SET'));
+        error_log('is_coming_soon raw: ' . (isset($_POST['is_coming_soon']) ? $_POST['is_coming_soon'] : 'NOT SET'));
 
         $data = array(
             'race_date' => sanitize_text_field($_POST['race_date']),
@@ -155,9 +168,9 @@ class Race_Registration_Admin {
             'distance' => sanitize_text_field($_POST['distance']),
             'website_url' => esc_url_raw($_POST['website_url']),
             'registration_url' => esc_url_raw($_POST['registration_url']),
-            'is_pinned' => isset($_POST['is_pinned']) ? 1 : 0,
-            'is_limit_reached' => isset($_POST['is_limit_reached']) ? 1 : 0,
-            'is_coming_soon' => isset($_POST['is_coming_soon']) ? 1 : 0
+            'is_pinned' => isset($_POST['is_pinned']) && intval($_POST['is_pinned']) === 1 ? 1 : 0,
+            'is_limit_reached' => isset($_POST['is_limit_reached']) && intval($_POST['is_limit_reached']) === 1 ? 1 : 0,
+            'is_coming_soon' => isset($_POST['is_coming_soon']) && intval($_POST['is_coming_soon']) === 1 ? 1 : 0
         );
 
         error_log('Data: ' . print_r($data, true));
