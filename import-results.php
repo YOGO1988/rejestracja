@@ -26,13 +26,18 @@ if (!$wp_loaded) {
     die("Nie znaleziono wp-config.php. Uruchom skrypt z katalogu WordPress.\n");
 }
 
-echo "=== Import wyników z pliku 123.txt ===\n\n";
+echo "=== Import wyników z pliku danych ===\n\n";
 
-// Wczytaj plik 123.txt
-$file_path = __DIR__ . '/123.txt';
+// Wczytaj plik (priorytet get-page-content.php.html, fallback 123.txt)
+$file_path = __DIR__ . '/get-page-content.php.html';
 if (!file_exists($file_path)) {
-    die("Błąd: Nie znaleziono pliku 123.txt\n");
+    $file_path = __DIR__ . '/123.txt';
+    if (!file_exists($file_path)) {
+        die("Błąd: Nie znaleziono pliku get-page-content.php.html ani 123.txt\n");
+    }
 }
+
+echo "Używam pliku: " . basename($file_path) . "\n";
 
 $content = file_get_contents($file_path);
 
@@ -87,8 +92,8 @@ function parse_pdf_links_simple($html) {
         $url = trim($match[1]);
         $text = trim(strip_tags($match[2]));
 
-        // Sprawdź czy to PDF lub dolandia.pl (system wyników)
-        if (stripos($url, '.pdf') !== false || stripos($url, 'dolandia.pl') !== false) {
+        // Akceptuj wszystkie linki z PDF
+        if (stripos($url, '.pdf') !== false) {
             $pdf_files[] = array(
                 'url' => $url,
                 'button_text' => $text

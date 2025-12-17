@@ -103,10 +103,13 @@ class Race_Results {
             return;
         }
 
-        // Sprawdź czy plik 123.txt istnieje
-        $file_path = RACE_RESULTS_PLUGIN_DIR . '123.txt';
+        // Sprawdź czy plik z danymi istnieje (priorytet get-page-content.php.html, fallback 123.txt)
+        $file_path = RACE_RESULTS_PLUGIN_DIR . 'get-page-content.php.html';
         if (!file_exists($file_path)) {
-            return; // Brak pliku, pomiń import
+            $file_path = RACE_RESULTS_PLUGIN_DIR . '123.txt';
+            if (!file_exists($file_path)) {
+                return; // Brak pliku, pomiń import
+            }
         }
 
         // Wczytaj plik
@@ -198,7 +201,8 @@ class Race_Results {
             $url = trim($match[1]);
             $text = trim(strip_tags($match[2]));
 
-            if (stripos($url, '.pdf') !== false || stripos($url, 'dolandia.pl') !== false) {
+            // Akceptuj wszystkie linki z PDF
+            if (stripos($url, '.pdf') !== false) {
                 $links[] = array('url' => $url, 'button_text' => $text);
             }
         }
