@@ -275,17 +275,21 @@ class Race_Results_Import_Page {
         // Wczytaj plik
         $content = file_get_contents($file_path);
 
-        // Znajdź serializowane dane ACF
-        preg_match('/=== PEŁNA ZAWARTOŚĆ POLA \'tabela_wynikow\' ===.*?Długość: \d+ znaków\s+(a:\d+:\{.*?\})\s+===/s', $content, $matches);
-
-        if (!isset($matches[1])) {
+        // Znajdź serializowane dane ACF - szukaj linii zaczynającej się od a:5:{s:5:"acftf"
+        if (preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
+            // Znaleziono - wyciągnij do końca lub do następnego ===
+            $serialized = preg_split('/\s*===/', $matches[1])[0];
+            $table_data = @unserialize($serialized);
+        } else {
             return array('success' => false, 'message' => 'Nie znaleziono danych ACF w pliku');
         }
 
-        $table_data = @unserialize($matches[1]);
+        if ($table_data === false || !is_array($table_data)) {
+            return array('success' => false, 'message' => 'Błąd deserializacji - dane mogą być uszkodzone');
+        }
 
-        if ($table_data === false || !isset($table_data['b']) || !is_array($table_data['b'])) {
-            return array('success' => false, 'message' => 'Błąd deserializacji danych');
+        if (!isset($table_data['b']) || !is_array($table_data['b'])) {
+            return array('success' => false, 'message' => 'Brak danych do importu w pliku');
         }
 
         $imported = 0;
