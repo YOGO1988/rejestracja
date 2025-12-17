@@ -145,6 +145,9 @@ class Race_Registration_Admin {
 
         $id = intval($_POST['id']);
 
+        error_log('=== UPDATE RACE START ===');
+        error_log('Race ID: ' . $id);
+
         $data = array(
             'race_date' => sanitize_text_field($_POST['race_date']),
             'race_name' => sanitize_text_field($_POST['race_name']),
@@ -157,12 +160,19 @@ class Race_Registration_Admin {
             'is_coming_soon' => isset($_POST['is_coming_soon']) ? 1 : 0
         );
 
+        error_log('Data: ' . print_r($data, true));
+
         $result = $this->db->update_race($id, $data);
+
+        global $wpdb;
+        error_log('Update result: ' . var_export($result, true));
+        error_log('WPDB last error: ' . $wpdb->last_error);
+        error_log('=== UPDATE RACE END ===');
 
         if ($result !== false) {
             wp_send_json_success(array('message' => 'Zawód został zaktualizowany'));
         } else {
-            wp_send_json_error(array('message' => 'Nie udało się zaktualizować zawodu'));
+            wp_send_json_error(array('message' => 'Nie udało się zaktualizować zawodu. Błąd: ' . $wpdb->last_error));
         }
     }
 
