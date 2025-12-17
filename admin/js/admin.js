@@ -28,6 +28,13 @@ jQuery(document).ready(function($) {
     // Dodawanie/edycja zawodu
     form.on('submit', function(e) {
         e.preventDefault();
+        console.log('Form submitted');
+
+        // Sprawdzenie wymaganych pól
+        if (!$('#race-date').val() || !$('#race-name').val() || !$('#location').val() || !$('#distance').val()) {
+            showNotice('Wypełnij wszystkie wymagane pola', 'error');
+            return false;
+        }
 
         const raceId = $('#race-id').val();
         const action = raceId ? 'race_reg_update_race' : 'race_reg_add_race';
@@ -47,15 +54,23 @@ jQuery(document).ready(function($) {
             is_coming_soon: $('#is-coming-soon').is(':checked') ? 1 : 0
         };
 
+        console.log('Sending data:', data);
+
         $.post(raceRegAdmin.ajaxUrl, data, function(response) {
+            console.log('Response:', response);
             if (response.success) {
                 showNotice(response.data.message, 'success');
                 modal.fadeOut();
                 location.reload();
             } else {
-                showNotice(response.data.message, 'error');
+                showNotice(response.data.message || 'Wystąpił błąd', 'error');
             }
+        }).fail(function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            showNotice('Błąd połączenia. Spróbuj ponownie.', 'error');
         });
+
+        return false;
     });
 
     // Edycja zawodu

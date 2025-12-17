@@ -106,7 +106,7 @@ if (!defined('ABSPATH')) {
 
     <!-- Tabela zawodów -->
     <div class="race-reg-table-wrap">
-        <table class="wp-list-table widefat fixed striped" id="races-table">
+        <table class="wp-list-table widefat striped" id="races-table">
             <thead>
                 <tr>
                     <th class="column-drag"></th>
