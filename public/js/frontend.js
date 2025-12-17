@@ -89,19 +89,7 @@ jQuery(document).ready(function($) {
     function updateResultsCount(count) {
         const countElement = $('.race-count');
         if (countElement.length) {
-            const word = getRaceWord(count);
-            countElement.html('Wyświetlono <strong>' + count + '</strong> ' + word);
-        }
-    }
-
-    // Odmiana słowa "zawody"
-    function getRaceWord(count) {
-        if (count === 1) {
-            return 'zawód';
-        } else if (count >= 2 && count <= 4) {
-            return 'zawody';
-        } else {
-            return 'zawodów';
+            countElement.html('Wyświetlono <strong>' + count + '</strong>');
         }
     }
 

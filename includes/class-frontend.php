@@ -160,24 +160,11 @@ class Race_Registration_Frontend {
                 </div>
 
                 <div class="race-results-info">
-                    <span class="race-count">Wyświetlono <strong><?php echo count($races); ?></strong> <?php echo $this->get_race_word(count($races)); ?></span>
+                    <span class="race-count">Wyświetlono <strong><?php echo count($races); ?></strong></span>
                 </div>
             <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();
-    }
-
-    /**
-     * Pomocnicza funkcja do odmiany słowa "zawody"
-     */
-    private function get_race_word($count) {
-        if ($count == 1) {
-            return 'zawód';
-        } elseif ($count >= 2 && $count <= 4) {
-            return 'zawody';
-        } else {
-            return 'zawodów';
-        }
     }
 }
