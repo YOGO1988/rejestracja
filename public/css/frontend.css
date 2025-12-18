@@ -144,17 +144,17 @@
 .race-pdf-buttons {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 /* Przyciski */
 .race-btn {
     display: inline-block;
-    padding: 6px 14px;
+    padding: 4px 10px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
     transition: all 0.3s;
     cursor: pointer;
@@ -200,9 +200,9 @@
 
 .race-pagination-btn {
     padding: 10px 20px;
-    background: #667eea;
-    color: #fff;
-    border: none;
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
     border-radius: 6px;
     font-weight: 600;
     font-size: 14px;
@@ -211,13 +211,16 @@
 }
 
 .race-pagination-btn:hover:not(:disabled) {
-    background: #5568d3;
+    background: #667eea;
+    color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .race-pagination-btn:disabled {
-    background: #ccc;
+    background: transparent;
+    color: #ccc;
+    border-color: #ccc;
     cursor: not-allowed;
     opacity: 0.5;
 }
