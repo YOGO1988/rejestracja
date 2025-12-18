@@ -6,6 +6,79 @@ jQuery(document).ready(function($) {
     const searchInput = $('#race-results-search-input');
     const sortSelect = $('#race-results-sort-select');
 
+    // Paginacja
+    const rowsPerPage = 20;
+    let currentPage = 1;
+    let visibleRows = [];
+
+    // Inicjalizacja
+    function init() {
+        updateVisibleRows();
+        updatePagination();
+    }
+
+    // Pobierz widoczne wiersze (po wyszukiwaniu)
+    function updateVisibleRows() {
+        visibleRows = tbody.find('.race-row:visible').get();
+    }
+
+    // Aktualizuj paginację
+    function updatePagination() {
+        const totalPages = Math.ceil(visibleRows.length / rowsPerPage);
+
+        // Aktualizuj przyciski i info
+        $('#race-current-page').text(currentPage);
+        $('#race-total-pages').text(totalPages);
+
+        $('#race-pagination-prev').prop('disabled', currentPage === 1);
+        $('#race-pagination-next').prop('disabled', currentPage === totalPages || totalPages === 0);
+
+        // Ukryj paginację jeśli jest tylko 1 strona lub mniej
+        if (totalPages <= 1) {
+            $('#race-pagination').hide();
+        } else {
+            $('#race-pagination').show();
+        }
+
+        // Pokaż tylko wiersze dla aktualnej strony
+        showPage(currentPage);
+    }
+
+    // Pokaż wiersze dla danej strony
+    function showPage(page) {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        // Ukryj wszystkie wiersze
+        $(visibleRows).hide();
+
+        // Pokaż tylko wiersze dla aktualnej strony
+        for (let i = start; i < end && i < visibleRows.length; i++) {
+            $(visibleRows[i]).show();
+        }
+
+        // Przewiń do góry tabeli
+        $('html, body').animate({
+            scrollTop: $('.race-results-table-wrap').offset().top - 100
+        }, 400);
+    }
+
+    // Obsługa przycisków paginacji
+    $('#race-pagination-prev').on('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+        }
+    });
+
+    $('#race-pagination-next').on('click', function() {
+        const totalPages = Math.ceil(visibleRows.length / rowsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePagination();
+        }
+    });
+
     // Wyszukiwanie
     searchInput.on('keyup', function() {
         const searchTerm = $(this).val().toLowerCase();
@@ -22,7 +95,10 @@ jQuery(document).ready(function($) {
             }
         });
 
-        updateResultsCount();
+        // Reset do pierwszej strony po wyszukiwaniu
+        currentPage = 1;
+        updateVisibleRows();
+        updatePagination();
     });
 
     // Sortowanie
@@ -75,11 +151,13 @@ jQuery(document).ready(function($) {
         $.each(rows, function(index, row) {
             tbody.append(row);
         });
+
+        // Reset do pierwszej strony po sortowaniu
+        currentPage = 1;
+        updateVisibleRows();
+        updatePagination();
     });
 
-    // Aktualizacja licznika wyników
-    function updateResultsCount() {
-        const visibleRows = tbody.find('.race-row:visible').length;
-        $('.race-count strong').text(visibleRows);
-    }
+    // Inicjalizacja przy załadowaniu
+    init();
 });

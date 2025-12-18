@@ -176,8 +176,17 @@ class Race_Results_Frontend {
                     </table>
                 </div>
 
-                <div class="race-results-info">
-                    <span class="race-count">Wyświetlono <strong><?php echo count($results); ?></strong> <?php echo count($results) === 1 ? 'wynik' : (count($results) < 5 ? 'wyniki' : 'wyników'); ?></span>
+                <!-- Paginacja -->
+                <div class="race-pagination" id="race-pagination">
+                    <button class="race-pagination-btn race-pagination-prev" id="race-pagination-prev" disabled>
+                        ← Poprzednia
+                    </button>
+                    <span class="race-pagination-info">
+                        Strona <span id="race-current-page">1</span> z <span id="race-total-pages">1</span>
+                    </span>
+                    <button class="race-pagination-btn race-pagination-next" id="race-pagination-next">
+                        Następna →
+                    </button>
                 </div>
             <?php endif; ?>
         </div>

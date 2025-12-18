@@ -150,11 +150,11 @@
 /* Przyciski */
 .race-btn {
     display: inline-block;
-    padding: 10px 20px;
-    border-radius: 6px;
+    padding: 6px 14px;
+    border-radius: 4px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
     transition: all 0.3s;
     cursor: pointer;
@@ -188,18 +188,47 @@
     font-style: italic;
 }
 
-/* Info o wynikach */
-.race-results-info {
-    margin-top: 20px;
-    text-align: center;
-    color: #666;
+/* Paginacja */
+.race-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding: 20px;
 }
 
-.race-count {
+.race-pagination-btn {
+    padding: 10px 20px;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
     font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.race-count strong {
+.race-pagination-btn:hover:not(:disabled) {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.race-pagination-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.race-pagination-info {
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+}
+
+.race-pagination-info span {
     color: #667eea;
     font-weight: 700;
 }
@@ -299,6 +328,17 @@
     }
 
     .race-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    /* Paginacja na mobile */
+    .race-pagination {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .race-pagination-btn {
         width: 100%;
         max-width: 200px;
     }
