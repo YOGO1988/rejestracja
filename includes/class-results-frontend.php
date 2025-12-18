@@ -134,7 +134,15 @@ class Race_Results_Frontend {
                                             <div class="race-pdf-buttons">
                                                 <?php foreach ($result->results_pdf_array as $pdf): ?>
                                                     <?php
-                                                    $file_url = wp_get_attachment_url($pdf['file_id']);
+                                                    // Obsługa dwóch formatów: url (z importu) lub file_id (z admina)
+                                                    if (isset($pdf['url']) && !empty($pdf['url'])) {
+                                                        $file_url = $pdf['url'];
+                                                    } elseif (isset($pdf['file_id'])) {
+                                                        $file_url = wp_get_attachment_url($pdf['file_id']);
+                                                    } else {
+                                                        $file_url = false;
+                                                    }
+
                                                     if ($file_url):
                                                     ?>
                                                         <a href="<?php echo esc_url($file_url); ?>"
