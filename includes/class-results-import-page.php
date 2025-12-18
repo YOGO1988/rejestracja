@@ -279,6 +279,8 @@ class Race_Results_Import_Page {
         if (preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
             // Znaleziono - wyciągnij do końca lub do następnego ===
             $serialized = preg_split('/\s*===/', $matches[1])[0];
+            // Dekoduj encje HTML (plik z GitHub ma &gt;, &quot;, itp.)
+            $serialized = html_entity_decode($serialized, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $table_data = @unserialize($serialized);
         } else {
             return array('success' => false, 'message' => 'Nie znaleziono danych ACF w pliku');

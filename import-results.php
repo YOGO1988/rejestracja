@@ -41,14 +41,15 @@ echo "Używam pliku: " . basename($file_path) . "\n";
 
 $content = file_get_contents($file_path);
 
-// Znajdź serializowane dane ACF
-preg_match('/=== PEŁNA ZAWARTOŚĆ POLA \'tabela_wynikow\' ===.*?Długość: \d+ znaków\s+(a:\d+:\{.*?\})\s+===/s', $content, $matches);
-
-if (!isset($matches[1])) {
+// Znajdź serializowane dane ACF - szukaj linii zaczynającej się od a:5:{s:5:"acftf"
+if (!preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
     die("Błąd: Nie znaleziono danych ACF w pliku\n");
 }
 
-$serialized_data = $matches[1];
+// Wyciągnij do końca lub do następnego ===
+$serialized_data = preg_split('/\s*===/', $matches[1])[0];
+// Dekoduj encje HTML (plik z GitHub ma &gt;, &quot;, itp.)
+$serialized_data = html_entity_decode($serialized_data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
 // Deserializuj dane
 $table_data = @unserialize($serialized_data);

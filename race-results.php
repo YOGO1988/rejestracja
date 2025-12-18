@@ -117,14 +117,16 @@ class Race_Results {
         // Wczytaj plik
         $content = file_get_contents($file_path);
 
-        // Znajdź serializowane dane ACF
-        preg_match('/=== PEŁNA ZAWARTOŚĆ POLA \'tabela_wynikow\' ===.*?Długość: \d+ znaków\s+(a:\d+:\{.*?\})\s+===/s', $content, $matches);
-
-        if (!isset($matches[1])) {
+        // Znajdź serializowane dane ACF - szukaj linii zaczynającej się od a:5:{s:5:"acftf"
+        if (!preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
             return; // Nie znaleziono danych
         }
 
-        $table_data = @unserialize($matches[1]);
+        // Wyciągnij do końca lub do następnego ===
+        $serialized = preg_split('/\s*===/', $matches[1])[0];
+        // Dekoduj encje HTML (plik z GitHub ma &gt;, &quot;, itp.)
+        $serialized = html_entity_decode($serialized, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $table_data = @unserialize($serialized);
 
         if ($table_data === false || !isset($table_data['b']) || !is_array($table_data['b'])) {
             return; // Błąd deserializacji
