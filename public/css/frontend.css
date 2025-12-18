@@ -82,8 +82,9 @@
 }
 
 .race-results-table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
+    background: #fff;
+    color: #333;
+    border-bottom: 2px solid #e0e0e0;
 }
 
 .race-results-table th {
@@ -279,12 +280,13 @@
 
     /* Pierwsze pole (data) jako nagłówek karty */
     .race-results-table td:first-child {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #fff;
+        background: #f8f9fa;
+        color: #333;
         font-size: 16px;
         font-weight: 700;
         padding-left: 16px;
         text-align: left;
+        border-bottom: 2px solid #e0e0e0;
     }
 
     .race-results-table td:first-child:before {
