@@ -105,31 +105,16 @@ class Race_Results {
             return;
         }
 
-        // Sprawdź czy plik z danymi istnieje (priorytet get-page-content.php.html, fallback 123.txt)
-        $file_path = RACE_RESULTS_PLUGIN_DIR . 'get-page-content.php.html';
-        if (!file_exists($file_path)) {
-            $file_path = RACE_RESULTS_PLUGIN_DIR . '123.txt';
-            if (!file_exists($file_path)) {
-                return; // Brak pliku, pomiń import
-            }
+        // Załaduj dane z osadzonego pliku PHP
+        $data_file = RACE_RESULTS_PLUGIN_DIR . 'includes/race-data.php';
+        if (!file_exists($data_file)) {
+            return; // Brak pliku z danymi
         }
 
-        // Wczytaj plik
-        $content = file_get_contents($file_path);
+        $table_data = include $data_file;
 
-        // Znajdź serializowane dane ACF - szukaj linii zaczynającej się od a:5:{s:5:"acftf"
-        if (!preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
-            return; // Nie znaleziono danych
-        }
-
-        // Wyciągnij do końca lub do następnego ===
-        $serialized = preg_split('/\s*===/', $matches[1])[0];
-        // Dekoduj encje HTML (plik z GitHub ma &gt;, &quot;, itp.)
-        $serialized = html_entity_decode($serialized, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $table_data = @unserialize($serialized);
-
-        if ($table_data === false || !isset($table_data['b']) || !is_array($table_data['b'])) {
-            return; // Błąd deserializacji
+        if (!is_array($table_data) || !isset($table_data['b']) || !is_array($table_data['b'])) {
+            return; // Nieprawidłowe dane
         }
 
         // Importuj dane

@@ -46,12 +46,8 @@ class Race_Results_Import_Page {
         $table_name = $wpdb->prefix . 'race_results';
         $count = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
 
-        $file_path = RACE_RESULTS_PLUGIN_DIR . 'get-page-content.php.html';
+        $file_path = RACE_RESULTS_PLUGIN_DIR . 'includes/race-data.php';
         $file_exists = file_exists($file_path);
-        if (!$file_exists) {
-            $file_path = RACE_RESULTS_PLUGIN_DIR . '123.txt';
-            $file_exists = file_exists($file_path);
-        }
         ?>
         <div class="wrap">
             <h1>Import Danych Wyników</h1>
@@ -66,8 +62,8 @@ class Race_Results_Import_Page {
 
             <?php if (!$file_exists): ?>
                 <div class="notice notice-error">
-                    <p><strong>Błąd:</strong> Nie znaleziono pliku z danymi (get-page-content.php.html lub 123.txt)</p>
-                    <p>Upewnij się, że plik znajduje się w katalogu wtyczki.</p>
+                    <p><strong>Błąd:</strong> Nie znaleziono pliku z danymi (includes/race-data.php)</p>
+                    <p>Upewnij się, że wtyczka została poprawnie zainstalowana.</p>
                 </div>
             <?php else: ?>
                 <div class="card" style="max-width: 800px;">
@@ -263,35 +259,16 @@ class Race_Results_Import_Page {
         global $wpdb;
         $table_name = $wpdb->prefix . 'race_results';
 
-        // Sprawdź czy plik istnieje
-        $file_path = RACE_RESULTS_PLUGIN_DIR . 'get-page-content.php.html';
-        if (!file_exists($file_path)) {
-            $file_path = RACE_RESULTS_PLUGIN_DIR . '123.txt';
-            if (!file_exists($file_path)) {
-                return array('success' => false, 'message' => 'Nie znaleziono pliku z danymi');
-            }
+        // Załaduj dane z osadzonego pliku PHP
+        $data_file = RACE_RESULTS_PLUGIN_DIR . 'includes/race-data.php';
+        if (!file_exists($data_file)) {
+            return array('success' => false, 'message' => 'Nie znaleziono pliku z danymi');
         }
 
-        // Wczytaj plik
-        $content = file_get_contents($file_path);
+        $table_data = include $data_file;
 
-        // Znajdź serializowane dane ACF - szukaj linii zaczynającej się od a:5:{s:5:"acftf"
-        if (preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
-            // Znaleziono - wyciągnij do końca lub do następnego ===
-            $serialized = preg_split('/\s*===/', $matches[1])[0];
-            // Dekoduj encje HTML (plik z GitHub ma &gt;, &quot;, itp.)
-            $serialized = html_entity_decode($serialized, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $table_data = @unserialize($serialized);
-        } else {
-            return array('success' => false, 'message' => 'Nie znaleziono danych ACF w pliku');
-        }
-
-        if ($table_data === false || !is_array($table_data)) {
-            return array('success' => false, 'message' => 'Błąd deserializacji - dane mogą być uszkodzone');
-        }
-
-        if (!isset($table_data['b']) || !is_array($table_data['b'])) {
-            return array('success' => false, 'message' => 'Brak danych do importu w pliku');
+        if (!is_array($table_data) || !isset($table_data['b']) || !is_array($table_data['b'])) {
+            return array('success' => false, 'message' => 'Nieprawidłowe dane w pliku');
         }
 
         $imported = 0;

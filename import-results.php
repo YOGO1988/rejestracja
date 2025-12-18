@@ -26,36 +26,20 @@ if (!$wp_loaded) {
     die("Nie znaleziono wp-config.php. Uruchom skrypt z katalogu WordPress.\n");
 }
 
-echo "=== Import wyników z pliku danych ===\n\n";
+echo "=== Import wyników z osadzonych danych ===\n\n";
 
-// Wczytaj plik (priorytet get-page-content.php.html, fallback 123.txt)
-$file_path = __DIR__ . '/get-page-content.php.html';
-if (!file_exists($file_path)) {
-    $file_path = __DIR__ . '/123.txt';
-    if (!file_exists($file_path)) {
-        die("Błąd: Nie znaleziono pliku get-page-content.php.html ani 123.txt\n");
-    }
+// Załaduj dane z osadzonego pliku PHP
+$data_file = __DIR__ . '/includes/race-data.php';
+if (!file_exists($data_file)) {
+    die("Błąd: Nie znaleziono pliku includes/race-data.php\n");
 }
 
-echo "Używam pliku: " . basename($file_path) . "\n";
+echo "Ładuję dane z: " . basename($data_file) . "\n";
 
-$content = file_get_contents($file_path);
+$table_data = include $data_file;
 
-// Znajdź serializowane dane ACF - szukaj linii zaczynającej się od a:5:{s:5:"acftf"
-if (!preg_match('/(a:5:\{s:5:"acftf".*)/s', $content, $matches)) {
-    die("Błąd: Nie znaleziono danych ACF w pliku\n");
-}
-
-// Wyciągnij do końca lub do następnego ===
-$serialized_data = preg_split('/\s*===/', $matches[1])[0];
-// Dekoduj encje HTML (plik z GitHub ma &gt;, &quot;, itp.)
-$serialized_data = html_entity_decode($serialized_data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-// Deserializuj dane
-$table_data = @unserialize($serialized_data);
-
-if ($table_data === false || !is_array($table_data)) {
-    die("Błąd: Nie udało się deserializować danych\n");
+if (!is_array($table_data)) {
+    die("Błąd: Nieprawidłowe dane w pliku\n");
 }
 
 echo "Znaleziono dane ACF Table Field\n";
