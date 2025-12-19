@@ -3,8 +3,8 @@
  * Plugin Name: Wyniki Biegów
  * Plugin URI: https://github.com/YOGO1988/rejestracja
  * Description: Wtyczka do zarządzania wynikami biegów - wyświetla tabelę z wynikami w formacie PDF i online
- * Version: 1.0.0
- * Author: YOGO1988
+ * Version: 2.0.1
+ * Author: YO&GO Events
  * Text Domain: race-results
  * Domain Path: /languages
  */
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definiowanie stałych
-define('RACE_RESULTS_VERSION', '1.0.0');
+define('RACE_RESULTS_VERSION', '2.0.1');
 define('RACE_RESULTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('RACE_RESULTS_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('RACE_RESULTS_PLUGIN_FILE', __FILE__);

@@ -24,6 +24,14 @@ class Race_Results_Frontend {
 
         add_shortcode('race_results_table', array($this, 'render_table_shortcode'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_frontend_assets'));
+        add_action('wp_head', array($this, 'add_viewport_meta'), 1);
+    }
+
+    /**
+     * Dodaj viewport meta tag dla responsywności
+     */
+    public function add_viewport_meta() {
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">' . "\n";
     }
 
     /**

@@ -240,30 +240,39 @@
 /* Responsywność - widok mobilny */
 @media (max-width: 768px) {
     .race-results-table-wrap {
-        margin: 20px 10px;
+        margin: 20px 10px !important;
+        max-width: 100% !important;
+        width: 100% !important;
     }
 
     .race-table-controls {
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: column !important;
+        gap: 15px !important;
     }
 
     .race-search-box {
-        min-width: 100%;
+        min-width: 100% !important;
+        width: 100% !important;
     }
 
     .race-sort-box {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
 
     .race-sort-select {
-        width: 100%;
+        width: 100% !important;
+    }
+
+    /* Wrapper tabeli - bez scrollowania */
+    .race-table-responsive {
+        overflow-x: visible !important;
+        width: 100% !important;
     }
 
     /* Ukryj nagłówki tabeli */
     .race-results-table thead {
-        display: none;
+        display: none !important;
     }
 
     /* Każdy wiersz jako karta */
@@ -271,107 +280,110 @@
     .race-results-table tbody,
     .race-results-table tr,
     .race-results-table td {
-        display: block;
-        width: 100%;
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
     }
 
     .race-results-table tr {
-        margin-bottom: 20px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
     }
 
     .race-results-table tr:hover {
-        background-color: #fff;
+        background-color: #fff !important;
     }
 
     .race-results-table td {
-        padding: 12px 16px;
-        border-bottom: 1px solid #f0f0f0;
-        position: relative;
-        padding-left: 45%;
-        text-align: right;
+        padding: 12px 16px !important;
+        border-bottom: 1px solid #f0f0f0 !important;
+        position: relative !important;
+        padding-left: 45% !important;
+        text-align: right !important;
     }
 
     .race-results-table td:last-child {
-        border-bottom: none;
+        border-bottom: none !important;
     }
 
     /* Etykiety dla komórek */
     .race-results-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-weight: 600;
-        color: #667eea;
-        text-align: left;
+        content: attr(data-label) !important;
+        position: absolute !important;
+        left: 16px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        font-weight: 600 !important;
+        color: #667eea !important;
+        text-align: left !important;
+        font-size: 13px !important;
     }
 
     /* Pierwsze pole (data) jako nagłówek karty */
     .race-results-table td:first-child {
-        background: #f8f9fa;
-        color: #333;
-        font-size: 16px;
-        font-weight: 700;
-        padding-left: 16px;
-        text-align: left;
-        border-bottom: 2px solid #e0e0e0;
+        background: #f8f9fa !important;
+        color: #333 !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        padding-left: 16px !important;
+        text-align: left !important;
+        border-bottom: 2px solid #e0e0e0 !important;
     }
 
     .race-results-table td:first-child:before {
-        display: none;
+        display: none !important;
     }
 
     /* Przyciski PDF na mobile */
     .race-pdf-buttons {
-        justify-content: flex-start;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 4px;
+        justify-content: flex-start !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
     }
 
     .race-btn {
-        width: auto;
-        max-width: none;
+        width: auto !important;
+        max-width: none !important;
     }
 
     /* Paginacja na mobile */
     .race-pagination {
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: column !important;
+        gap: 15px !important;
     }
 
     .race-pagination-btn {
-        width: 100%;
-        max-width: 200px;
+        width: 100% !important;
+        max-width: 200px !important;
     }
 }
 
 /* Bardzo małe ekrany */
 @media (max-width: 480px) {
     .race-results-table td {
-        padding-left: 16px;
-        text-align: left;
-        padding-top: 35px;
+        padding-left: 16px !important;
+        text-align: left !important;
+        padding-top: 35px !important;
     }
 
     .race-results-table td:before {
-        top: 12px;
-        transform: none;
+        top: 12px !important;
+        transform: none !important;
     }
 
     .race-results-table td:first-child {
-        padding-top: 12px;
+        padding-top: 12px !important;
     }
 
     .race-btn {
-        width: auto;
-        max-width: none;
-        font-size: 10px;
-        padding: 2px 5px;
+        width: auto !important;
+        max-width: none !important;
+        font-size: 10px !important;
+        padding: 2px 5px !important;
     }
 }
