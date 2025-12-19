@@ -71,9 +71,14 @@ if (!defined('ABSPATH')) {
                 </div>
 
                 <div class="form-group">
-                    <label for="results-online-url">Link do wyników na żywo</label>
-                    <input type="url" id="results-online-url" name="results_online_url" placeholder="https://">
-                    <p class="description">Link do wyników na żywo podczas biegu (np. Athlinks, Datasport, itp.)</p>
+                    <label>Linki do wyników na żywo</label>
+                    <div id="online-links-container">
+                        <!-- Linki online będą dodawane tutaj dynamicznie -->
+                    </div>
+                    <button type="button" class="button" id="add-online-btn">
+                        <span class="dashicons dashicons-plus-alt"></span> Dodaj link online
+                    </button>
+                    <p class="description">Możesz dodać do dwóch linków do wyników na żywo (np. Athlinks, Datasport)</p>
                 </div>
 
                 <div class="form-actions">
@@ -128,8 +133,12 @@ if (!defined('ABSPATH')) {
                                 <?php endif; ?>
                             </td>
                             <td class="column-online">
-                                <?php if (!empty($result->results_online_url)): ?>
-                                    <a href="<?php echo esc_url($result->results_online_url); ?>" target="_blank" class="button button-small">Zobacz</a>
+                                <?php if (!empty($result->results_online_array) && is_array($result->results_online_array)): ?>
+                                    <div class="online-list">
+                                        <?php foreach ($result->results_online_array as $online): ?>
+                                            <span class="online-item"><?php echo esc_html($online['button_text']); ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
                                 <?php else: ?>
                                     <span class="no-link">-</span>
                                 <?php endif; ?>

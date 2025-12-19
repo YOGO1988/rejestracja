@@ -7,16 +7,21 @@ jQuery(document).ready(function($) {
     const formTitle = $('#form-title');
     const tbody = $('#results-tbody');
     const pdfContainer = $('#pdf-files-container');
+    const onlineContainer = $('#online-links-container');
 
     let pdfFileCounter = 0;
     let currentPdfFiles = [];
+    let onlineLinkCounter = 0;
+    let currentOnlineLinks = [];
 
     // Otwórz modal - dodawanie
     $('#add-result-btn').on('click', function() {
         resetForm();
         formTitle.text('Dodaj wyniki');
         currentPdfFiles = [];
+        currentOnlineLinks = [];
         renderPdfFiles();
+        renderOnlineLinks();
         modal.fadeIn(200);
     });
 
@@ -35,6 +40,15 @@ jQuery(document).ready(function($) {
     // Dodaj plik PDF
     $('#add-pdf-btn').on('click', function() {
         addPdfField();
+    });
+
+    // Dodaj link online
+    $('#add-online-btn').on('click', function() {
+        if (onlineContainer.find('.online-field-row').length >= 2) {
+            alert('Możesz dodać maksymalnie 2 linki online');
+            return;
+        }
+        addOnlineField();
     });
 
     // Funkcja dodająca pole dla pliku PDF
@@ -133,12 +147,75 @@ jQuery(document).ready(function($) {
         return pdfFiles;
     }
 
+    // Funkcja dodająca pole dla linku online
+    function addOnlineField(url = '', buttonText = '') {
+        onlineLinkCounter++;
+        const fieldId = 'online-field-' + onlineLinkCounter;
+
+        const fieldHtml = `
+            <div class="online-field-row" data-field-id="${fieldId}">
+                <div class="online-field-group">
+                    <input type="url" class="online-url" placeholder="https://" value="${url}">
+                    <input type="text" class="online-button-text" placeholder="Nazwa przycisku (np. zobacz)" value="${buttonText}">
+                    <button type="button" class="button remove-online-field" title="Usuń">
+                        <span class="dashicons dashicons-no-alt"></span>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        onlineContainer.append(fieldHtml);
+    }
+
+    // Usuń pole online
+    $(document).on('click', '.remove-online-field', function() {
+        $(this).closest('.online-field-row').fadeOut(200, function() {
+            $(this).remove();
+        });
+    });
+
+    // Renderuj pola online z tablicy
+    function renderOnlineLinks() {
+        onlineContainer.empty();
+        onlineLinkCounter = 0;
+
+        if (currentOnlineLinks.length === 0) {
+            // Dodaj jedno puste pole
+            addOnlineField();
+        } else {
+            currentOnlineLinks.forEach(function(online) {
+                addOnlineField(online.url, online.button_text);
+            });
+        }
+    }
+
+    // Zbierz dane z pól online
+    function collectOnlineLinks() {
+        const onlineLinks = [];
+
+        $('.online-field-row').each(function() {
+            const url = $(this).find('.online-url').val();
+            const buttonText = $(this).find('.online-button-text').val();
+
+            if (url && buttonText) {
+                onlineLinks.push({
+                    url: url,
+                    button_text: buttonText
+                });
+            }
+        });
+
+        return onlineLinks;
+    }
+
     // Resetuj formularz
     function resetForm() {
         form[0].reset();
         resultId.val('');
         pdfContainer.empty();
         pdfFileCounter = 0;
+        onlineContainer.empty();
+        onlineLinkCounter = 0;
     }
 
     // Zapisz wynik (dodaj/edytuj)
@@ -162,6 +239,7 @@ jQuery(document).ready(function($) {
         }
 
         const pdfFiles = collectPdfFiles();
+        const onlineLinks = collectOnlineLinks();
 
         const data = {
             action: resultId.val() ? 'race_results_update' : 'race_results_add',
@@ -171,7 +249,7 @@ jQuery(document).ready(function($) {
             race_name: $('#race-name').val(),
             location: $('#location').val(),
             results_pdf: JSON.stringify(pdfFiles),
-            results_online_url: $('#results-online-url').val()
+            results_online_url: JSON.stringify(onlineLinks)
         };
 
         $.ajax({
@@ -214,10 +292,12 @@ jQuery(document).ready(function($) {
                     $('#race-date').val(result.race_date);
                     $('#race-name').val(result.race_name);
                     $('#location').val(result.location);
-                    $('#results-online-url').val(result.results_online_url);
 
                     // Ustaw pliki PDF
                     currentPdfFiles = result.results_pdf_array || [];
+
+                    // Ustaw linki online
+                    currentOnlineLinks = result.results_online_array || [];
 
                     // Dla każdego pliku PDF pobierz nazwę z WordPress
                     if (currentPdfFiles.length > 0) {
@@ -238,18 +318,21 @@ jQuery(document).ready(function($) {
                                     filesProcessed++;
                                     if (filesProcessed === currentPdfFiles.length) {
                                         renderPdfFiles();
+                                        renderOnlineLinks();
                                     }
                                 },
                                 error: function() {
                                     filesProcessed++;
                                     if (filesProcessed === currentPdfFiles.length) {
                                         renderPdfFiles();
+                                        renderOnlineLinks();
                                     }
                                 }
                             });
                         });
                     } else {
                         renderPdfFiles();
+                        renderOnlineLinks();
                     }
 
                     modal.fadeIn(200);

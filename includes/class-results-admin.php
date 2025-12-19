@@ -102,12 +102,27 @@ class Race_Results_Admin {
         $results = $this->db->get_results(array('active_only' => true));
         $stats = $this->db->get_stats();
 
-        // Dekodowanie JSON dla wyników PDF
+        // Dekodowanie JSON dla wyników PDF i online
         foreach ($results as $result) {
             if (!empty($result->results_pdf)) {
                 $result->results_pdf_array = json_decode($result->results_pdf, true);
             } else {
                 $result->results_pdf_array = array();
+            }
+
+            // Dekodowanie JSON dla results_online_url
+            if (!empty($result->results_online_url)) {
+                $decoded = json_decode($result->results_online_url, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $result->results_online_array = $decoded;
+                } else {
+                    // Stary format - pojedynczy URL
+                    $result->results_online_array = array(
+                        array('url' => $result->results_online_url, 'button_text' => 'zobacz')
+                    );
+                }
+            } else {
+                $result->results_online_array = array();
             }
         }
 
@@ -174,12 +189,18 @@ class Race_Results_Admin {
             $results_pdf = json_decode(stripslashes($_POST['results_pdf']), true);
         }
 
+        // Dekodowanie results_online_url z JSON
+        $results_online = array();
+        if (!empty($_POST['results_online_url'])) {
+            $results_online = json_decode(stripslashes($_POST['results_online_url']), true);
+        }
+
         $data = array(
             'race_date' => sanitize_text_field($_POST['race_date']),
             'race_name' => sanitize_text_field($_POST['race_name']),
             'location' => sanitize_text_field($_POST['location']),
             'results_pdf' => $results_pdf,
-            'results_online_url' => esc_url_raw($_POST['results_online_url'])
+            'results_online_url' => $results_online
         );
 
         $result = $this->db->add_result($data);
@@ -212,12 +233,18 @@ class Race_Results_Admin {
             $results_pdf = json_decode(stripslashes($_POST['results_pdf']), true);
         }
 
+        // Dekodowanie results_online_url z JSON
+        $results_online = array();
+        if (!empty($_POST['results_online_url'])) {
+            $results_online = json_decode(stripslashes($_POST['results_online_url']), true);
+        }
+
         $data = array(
             'race_date' => sanitize_text_field($_POST['race_date']),
             'race_name' => sanitize_text_field($_POST['race_name']),
             'location' => sanitize_text_field($_POST['location']),
             'results_pdf' => $results_pdf,
-            'results_online_url' => esc_url_raw($_POST['results_online_url'])
+            'results_online_url' => $results_online
         );
 
         $result = $this->db->update_result($id, $data);
@@ -294,6 +321,21 @@ class Race_Results_Admin {
                 $result->results_pdf_array = json_decode($result->results_pdf, true);
             } else {
                 $result->results_pdf_array = array();
+            }
+
+            // Dekodowanie JSON dla online URL
+            if (!empty($result->results_online_url)) {
+                $decoded = json_decode($result->results_online_url, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $result->results_online_array = $decoded;
+                } else {
+                    // Stary format - pojedynczy URL
+                    $result->results_online_array = array(
+                        array('url' => $result->results_online_url, 'button_text' => 'zobacz')
+                    );
+                }
+            } else {
+                $result->results_online_array = array();
             }
 
             wp_send_json_success(array('result' => $result));
