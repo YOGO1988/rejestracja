@@ -160,28 +160,32 @@
     cursor: pointer;
     white-space: nowrap;
     line-height: 1.3;
+    background: #fff;
+    border: 1px solid #ddd;
 }
 
 .race-btn-pdf {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: #fff;
+    color: #f5576c;
+    border-color: #f5576c;
 }
 
 .race-btn-pdf:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
-    color: #fff;
+    box-shadow: 0 2px 8px rgba(245, 87, 108, 0.2);
+    color: #f5576c;
+    background: #fff;
 }
 
 .race-btn-online {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: #fff;
+    color: #4facfe;
+    border-color: #4facfe;
 }
 
 .race-btn-online:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
-    color: #fff;
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.2);
+    color: #4facfe;
+    background: #fff;
 }
 
 .race-na {

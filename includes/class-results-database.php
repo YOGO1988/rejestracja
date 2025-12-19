@@ -38,7 +38,7 @@ class Race_Results_Database {
             race_name varchar(255) NOT NULL,
             location varchar(255) NOT NULL,
             results_pdf longtext DEFAULT NULL,
-            results_online_url varchar(500) DEFAULT '',
+            results_online_url longtext DEFAULT NULL,
             sort_order int(11) DEFAULT 0,
             is_active tinyint(1) DEFAULT 1,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -129,6 +129,16 @@ class Race_Results_Database {
             $results_pdf_json = json_encode($data['results_pdf'], JSON_UNESCAPED_UNICODE);
         }
 
+        // Konwersja tablicy results_online_url na JSON (lub pojedynczy URL)
+        $results_online_json = '';
+        if (isset($data['results_online_url'])) {
+            if (is_array($data['results_online_url'])) {
+                $results_online_json = json_encode($data['results_online_url'], JSON_UNESCAPED_UNICODE);
+            } else {
+                $results_online_json = esc_url_raw($data['results_online_url']);
+            }
+        }
+
         $result = $wpdb->insert(
             $this->table_name,
             array(
@@ -136,7 +146,7 @@ class Race_Results_Database {
                 'race_name' => sanitize_text_field($data['race_name']),
                 'location' => sanitize_text_field($data['location']),
                 'results_pdf' => $results_pdf_json,
-                'results_online_url' => esc_url_raw($data['results_online_url']),
+                'results_online_url' => $results_online_json,
                 'sort_order' => $data['sort_order'],
                 'is_active' => 1
             ),
@@ -176,7 +186,11 @@ class Race_Results_Database {
             $format[] = '%s';
         }
         if (isset($data['results_online_url'])) {
-            $update_data['results_online_url'] = esc_url_raw($data['results_online_url']);
+            if (is_array($data['results_online_url'])) {
+                $update_data['results_online_url'] = json_encode($data['results_online_url'], JSON_UNESCAPED_UNICODE);
+            } else {
+                $update_data['results_online_url'] = esc_url_raw($data['results_online_url']);
+            }
             $format[] = '%s';
         }
         if (isset($data['sort_order'])) {

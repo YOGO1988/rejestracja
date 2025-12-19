@@ -73,12 +73,28 @@ class Race_Results_Frontend {
             $results = array_slice($results, 0, intval($atts['limit']));
         }
 
-        // Dekodowanie JSON dla wyników PDF
+        // Dekodowanie JSON dla wyników PDF i online
         foreach ($results as $result) {
             if (!empty($result->results_pdf)) {
                 $result->results_pdf_array = json_decode($result->results_pdf, true);
             } else {
                 $result->results_pdf_array = array();
+            }
+
+            // Obsługa results_online_url - może być JSON (nowy format) lub string (stary format)
+            if (!empty($result->results_online_url)) {
+                $decoded = json_decode($result->results_online_url, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    // Nowy format - tablica linków
+                    $result->results_online_array = $decoded;
+                } else {
+                    // Stary format - pojedynczy URL, konwertuj do tablicy
+                    $result->results_online_array = array(
+                        array('url' => $result->results_online_url, 'button_text' => 'zobacz')
+                    );
+                }
+            } else {
+                $result->results_online_array = array();
             }
         }
 
@@ -167,13 +183,19 @@ class Race_Results_Frontend {
                                         <?php endif; ?>
                                     </td>
                                     <td class="race-col-online" data-label="Na żywo">
-                                        <?php if (!empty($result->results_online_url)): ?>
-                                            <a href="<?php echo esc_url($result->results_online_url); ?>"
-                                               target="_blank"
-                                               rel="noopener noreferrer"
-                                               class="race-btn race-btn-online">
-                                                zobacz
-                                            </a>
+                                        <?php if (!empty($result->results_online_array) && is_array($result->results_online_array)): ?>
+                                            <div class="race-pdf-buttons">
+                                                <?php foreach ($result->results_online_array as $online): ?>
+                                                    <?php if (isset($online['url']) && !empty($online['url'])): ?>
+                                                        <a href="<?php echo esc_url($online['url']); ?>"
+                                                           target="_blank"
+                                                           rel="noopener noreferrer"
+                                                           class="race-btn race-btn-online">
+                                                            <?php echo esc_html($online['button_text']); ?>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            </div>
                                         <?php else: ?>
                                             <span class="race-na">-</span>
                                         <?php endif; ?>
