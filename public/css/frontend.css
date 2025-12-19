@@ -328,12 +328,15 @@
 
     /* Przyciski PDF na mobile */
     .race-pdf-buttons {
-        justify-content: flex-end;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
     }
 
     .race-btn {
-        width: 100%;
-        max-width: 200px;
+        width: auto;
+        max-width: none;
     }
 
     /* Paginacja na mobile */
@@ -366,6 +369,9 @@
     }
 
     .race-btn {
-        max-width: 100%;
+        width: auto;
+        max-width: none;
+        font-size: 10px;
+        padding: 2px 5px;
     }
 }
