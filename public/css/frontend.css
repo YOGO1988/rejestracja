@@ -275,89 +275,231 @@
 /* Responsywność - Mobile */
 @media screen and (max-width: 768px) {
     .race-registration-table-wrap {
-        margin: 20px 10px;
+        margin: 15px 5px;
+        max-width: 100%;
     }
 
     .race-table-controls {
         flex-direction: column;
         align-items: stretch;
-        padding: 15px;
+        padding: 12px;
+        gap: 12px;
     }
 
     .race-search-box {
         min-width: 100%;
     }
 
+    .race-search-input {
+        font-size: 16px; /* Zapobiega auto-zoom na iOS */
+        padding: 12px;
+    }
+
     .race-sort-box {
         flex-direction: column;
         align-items: stretch;
+        gap: 8px;
+    }
+
+    .race-sort-box label {
+        font-size: 13px;
     }
 
     .race-sort-select {
         width: 100%;
+        font-size: 16px; /* Zapobiega auto-zoom na iOS */
+        padding: 12px;
     }
 
     /* Tabela jako karty na mobile */
     .race-table-responsive {
-        box-shadow: none;
+        border: none;
+        background: transparent;
+        overflow-x: visible;
+    }
+
+    .race-registration-table {
+        border: none;
     }
 
     .race-registration-table thead {
         display: none;
     }
 
-    .race-registration-table tbody tr {
+    .race-registration-table tbody {
         display: block;
-        margin-bottom: 20px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
+    .race-registration-table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        background: #fff;
+        padding: 0;
+    }
+
+    .race-registration-table tbody tr:last-child {
+        margin-bottom: 15px;
+    }
+
+    /* Przypięte zawody na mobile - pomarańczowa lewa ramka */
     .race-registration-table tbody tr.race-pinned {
-        border-left: 4px solid #f59e0b;
+        border-left: 5px solid #ff8c00;
+        box-shadow: 0 2px 12px rgba(255, 140, 0, 0.15);
+    }
+
+    .race-registration-table tbody tr.race-pinned:hover {
+        background: #fff;
+    }
+
+    .race-registration-table tbody tr:hover {
+        background: #fff;
     }
 
     .race-registration-table tbody td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: block;
         padding: 12px 15px;
-        border-bottom: 1px solid #f3f4f6;
-        text-align: right;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: left;
+        width: 100%;
     }
 
     .race-registration-table tbody td:last-child {
         border-bottom: none;
     }
 
+    /* Etykiety dla każdego wiersza */
     .race-registration-table tbody td::before {
         content: attr(data-label);
-        font-weight: 600;
-        color: #6b7280;
-        text-align: left;
-        flex: 1;
+        display: block;
+        font-weight: 700;
+        color: #666;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
     }
 
+    /* Kolumny - reset szerokości */
+    .race-col-date,
+    .race-col-name,
+    .race-col-location,
+    .race-col-distance,
     .race-col-website,
     .race-col-registration {
-        text-align: right;
+        width: 100%;
+        text-align: left;
+    }
+
+    /* Data */
+    .race-date {
+        font-size: 15px;
+        font-weight: 700;
+        color: #222;
+    }
+
+    /* Nazwa zawodów */
+    .race-col-name {
+        min-width: 100%;
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    /* Dystans i lokalizacja */
+    .race-col-location,
+    .race-col-distance {
+        font-size: 14px;
+    }
+
+    /* Przyciski - pełna szerokość na mobile */
+    .race-btn {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .race-btn-website,
+    .race-btn-registration {
+        width: 100%;
+    }
+
+    /* Badgie - pełna szerokość i lepsze dopasowanie */
+    .race-limit-badge,
+    .race-coming-soon-badge {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
+        text-align: center;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
+
+    /* Badge wyróżnienia - pokaż na mobile */
+    .race-featured-badge {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 3px 8px;
+        background: #ff8c00;
+        color: #fff;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* N/A */
+    .race-na {
+        color: #999;
+        font-size: 13px;
+    }
+
+    /* Info o wynikach */
+    .race-results-info {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+/* Bardzo małe ekrany (poniżej 400px) */
+@media screen and (max-width: 400px) {
+    .race-registration-table-wrap {
+        margin: 10px 3px;
+    }
+
+    .race-table-controls {
+        padding: 10px;
+    }
+
+    .race-registration-table tbody tr {
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+
+    .race-registration-table tbody td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .race-col-name {
+        font-size: 15px;
     }
 
     .race-btn {
-        padding: 8px 16px;
+        padding: 10px 14px;
         font-size: 13px;
     }
 
-    .race-date {
-        font-size: 13px;
-        padding: 5px 10px;
-    }
-
-    .race-featured-badge {
-        display: block;
-        margin: 8px 0 0 0;
-        text-align: center;
+    .race-limit-badge,
+    .race-coming-soon-badge {
+        padding: 9px 10px;
+        font-size: 12px;
     }
 }
 
