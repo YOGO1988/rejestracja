@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2744 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -35,29 +35,28 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        .btn-primary { background: #4a7c59; color: white; }
-        .btn-primary:hover { background: #5d9970; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn-secondary:hover { background: #7d8a93; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-danger:hover { background: #e4606d; }
-        .btn-info { background: #17a2b8; color: white; }
-        .btn-info:hover { background: #3ab5c6; }
-        .btn-warning { background: #ffc107; color: #333; }
-        .btn-warning:hover { background: #ffcd39; }
+        .btn-primary { background: #4a5a3a; color: white; }
+        .btn-primary:hover { background: #5c6b4e; }
+        .btn-secondary { background: #4a5568; color: white; }
+        .btn-secondary:hover { background: #718096; }
+        .btn-danger { background: #8b0000; color: white; }
+        .btn-danger:hover { background: #a52a2a; }
+        .btn-edit { background: #2c3e50; color: white; }
+        .btn-edit:hover { background: #34495e; }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
         .panel {
-            background: white;
+            background: #f5f5f0;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid #4a5a3a;
         }
         .panel h2 {
-            color: #1a472a;
+            color: #1a2744;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #4a7c59;
+            border-bottom: 3px solid #4a5a3a;
         }
         .form-row {
             display: grid;
@@ -66,16 +65,17 @@
             margin-bottom: 15px;
         }
         .form-group { display: flex; flex-direction: column; }
-        .form-group label { font-weight: 600; color: #333; margin-bottom: 5px; }
+        .form-group label { font-weight: 600; color: #1a2744; margin-bottom: 5px; }
         .form-group input, .form-group select {
             padding: 10px;
-            border: 2px solid #ddd;
+            border: 2px solid #4a5568;
             border-radius: 6px;
             font-size: 14px;
+            background: white;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #4a7c59;
+            border-color: #4a5a3a;
         }
         .steps-nav {
             display: flex;
@@ -86,39 +86,39 @@
         }
         .step-btn {
             padding: 15px 25px;
-            border: 3px solid #4a7c59;
-            background: white;
-            color: #4a7c59;
+            border: 3px solid #4a5a3a;
+            background: #f5f5f0;
+            color: #1a2744;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
             font-size: 14px;
             transition: all 0.3s;
         }
-        .step-btn.active { background: #4a7c59; color: white; }
-        .step-btn.completed { background: #28a745; border-color: #28a745; color: white; }
+        .step-btn.active { background: #4a5a3a; color: white; }
+        .step-btn.completed { background: #2c3e50; border-color: #2c3e50; color: white; }
         .step-btn:hover { transform: translateY(-2px); }
         .step-content { display: none; }
         .step-content.active { display: block; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid #ddd; }
-        th { background: #1a472a; color: white; font-weight: 600; }
-        tr:nth-child(even) { background: #f8f9fa; }
-        tr:hover { background: #e8f5e9; }
-        .rank { font-weight: 700; color: #1a472a; }
-        .total-points { font-weight: 700; color: #4a7c59; font-size: 1.1em; }
-        .dnf { color: #dc3545; font-weight: 600; }
+        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid #ccc; }
+        th { background: #1a2744; color: white; font-weight: 600; }
+        tr:nth-child(even) { background: #e8e8e0; }
+        tr:hover { background: #d4d4c8; }
+        .rank { font-weight: 700; color: #1a2744; }
+        .total-points { font-weight: 700; color: #4a5a3a; font-size: 1.1em; }
+        .dnf { color: #8b0000; font-weight: 600; }
         .time-input {
             width: 80px;
             padding: 8px;
-            border: 2px solid #ddd;
+            border: 2px solid #4a5568;
             border-radius: 4px;
             text-align: center;
             font-size: 14px;
         }
-        .time-input:focus { outline: none; border-color: #4a7c59; }
-        .time-input.filled { background: #e8f5e9; border-color: #28a745; }
-        .points-cell { font-size: 12px; color: #666; }
+        .time-input:focus { outline: none; border-color: #4a5a3a; }
+        .time-input.filled { background: #d4e5d4; border-color: #4a5a3a; }
+        .points-cell { font-size: 12px; color: #4a5568; }
         .category-filter {
             display: flex;
             gap: 10px;
@@ -127,64 +127,80 @@
         }
         .category-filter button {
             padding: 8px 16px;
-            border: 2px solid #4a7c59;
-            background: white;
-            color: #4a7c59;
+            border: 2px solid #4a5a3a;
+            background: #f5f5f0;
+            color: #1a2744;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
         }
-        .category-filter button.active { background: #4a7c59; color: white; }
+        .category-filter button.active { background: #4a5a3a; color: white; }
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .modal.active { display: flex; }
         .modal-content {
-            background: white;
+            background: #f5f5f0;
             padding: 30px;
             border-radius: 10px;
             max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            border: 3px solid #4a5a3a;
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            border-bottom: 2px solid #4a5a3a;
+            padding-bottom: 10px;
         }
+        .modal-header h2 { color: #1a2744; }
         .modal-close {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
+            color: #1a2744;
         }
         .team-card {
-            background: #f8f9fa;
+            background: #e8e8e0;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 10px;
+            border-left: 5px solid #4a5a3a;
         }
-        .team-card h3 { color: #1a472a; margin-bottom: 10px; }
-        .team-total { font-size: 1.5em; font-weight: 700; color: #4a7c59; }
+        .team-card h3 { color: #1a2744; margin-bottom: 10px; }
+        .team-total { font-size: 1.5em; font-weight: 700; color: #4a5a3a; }
         .event-info {
-            background: #e8f5e9;
+            background: #e8e8e0;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            border: 2px solid #4a5a3a;
         }
-        .event-info h3 { color: #1a472a; margin-bottom: 10px; }
-        .event-info p { color: #666; }
+        .event-info h3 { color: #1a2744; margin-bottom: 10px; }
+        .event-info p { color: #4a5568; }
         .action-buttons { display: flex; gap: 5px; justify-content: center; }
+        .auto-save-info {
+            background: #d4e5d4;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
         @media (max-width: 768px) {
             .form-row { grid-template-columns: 1fr; }
             .time-input { width: 70px; }
@@ -193,18 +209,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>Wielobój Żołnierski - System Wyników</h1>
+        <h1>WIELOBOJ ZOLNIERSKI - SYSTEM WYNIKOW</h1>
 
         <div class="header-buttons">
-            <button class="btn btn-primary" onclick="openLiveWindow()">Otwórz Ekran Klasyfikacji</button>
-            <button class="btn btn-info" onclick="showPDFModal()">Generuj PDF</button>
-            <button class="btn btn-secondary" onclick="exportData()">Eksportuj Dane</button>
-            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Importuj Dane</button>
-            <button class="btn btn-danger" onclick="clearAllData()">Wyczyść Wszystko</button>
+            <button class="btn btn-primary" onclick="openLiveWindow()">Ekran Klasyfikacji</button>
+            <button class="btn btn-secondary" onclick="showPDFModal()">Generuj PDF</button>
+            <button class="btn btn-secondary" onclick="exportData()">Eksportuj</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Importuj</button>
+            <button class="btn btn-danger" onclick="clearAllData()">Wyczysc Wszystko</button>
         </div>
         <input type="file" id="importFile" style="display:none" accept=".json" onchange="handleImport(event)">
 
-        <!-- NAWIGACJA KROKÓW -->
         <div class="steps-nav">
             <button class="step-btn active" onclick="showStep(0)">1. Rejestracja</button>
             <button class="step-btn" onclick="showStep(1)">2. Lina</button>
@@ -217,11 +232,12 @@
         <!-- KROK 0: REJESTRACJA -->
         <div id="step0" class="step-content active">
             <div class="panel">
-                <h2>Rejestracja Zawodników</h2>
-                <form id="athleteForm" onsubmit="addAthlete(event)">
+                <h2>REJESTRACJA ZAWODNIKOW</h2>
+                <form id="athleteForm" onsubmit="saveAthlete(event)">
+                    <input type="hidden" id="editAthleteId" value="">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Imię *</label>
+                            <label>Imie *</label>
                             <input type="text" id="firstName" required>
                         </div>
                         <div class="form-group">
@@ -229,7 +245,7 @@
                             <input type="text" id="lastName" required>
                         </div>
                         <div class="form-group">
-                            <label>Drużyna *</label>
+                            <label>Druzyna *</label>
                             <input type="text" id="team" required list="teamsList">
                             <datalist id="teamsList"></datalist>
                         </div>
@@ -237,23 +253,26 @@
                             <label>Kategoria *</label>
                             <select id="category" required>
                                 <option value="">-- Wybierz --</option>
-                                <option value="M35-">Mężczyźni do 35 lat</option>
-                                <option value="M35+">Mężczyźni 35+</option>
+                                <option value="M35-">Mezczyzni do 35 lat</option>
+                                <option value="M35+">Mezczyzni 35+</option>
                                 <option value="K35-">Kobiety do 35 lat</option>
                                 <option value="K35+">Kobiety 35+</option>
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Dodaj Zawodnika</button>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Dodaj Zawodnika</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()" id="cancelBtn" style="display:none;">Anuluj</button>
+                    </div>
                 </form>
 
-                <h3 style="margin-top:20px; color:#1a472a;">Lista zarejestrowanych zawodników (<span id="athleteCount">0</span>)</h3>
-                <table id="registrationTable">
+                <h3 style="margin-top:20px; color:#1a2744;">Lista zawodnikow (<span id="athleteCount">0</span>)</h3>
+                <table>
                     <thead>
                         <tr>
                             <th>Lp.</th>
-                            <th>Imię i Nazwisko</th>
-                            <th>Drużyna</th>
+                            <th>Imie i Nazwisko</th>
+                            <th>Druzyna</th>
                             <th>Kategoria</th>
                             <th>Akcje</th>
                         </tr>
@@ -266,28 +285,22 @@
         <!-- KROK 1: LINA -->
         <div id="step1" class="step-content">
             <div class="panel">
-                <h2>Konkurencja 1: Lina</h2>
+                <h2>KONKURENCJA 1: LINA</h2>
+                <div class="auto-save-info">Wyniki zapisuja sie automatycznie przy wpisywaniu</div>
                 <div class="event-info">
                     <h3>Punktacja</h3>
-                    <p><strong>Mężczyźni:</strong> 7 sek = 100 pkt | każde 0.1s = 0.2 pkt</p>
-                    <p><strong>Kobiety:</strong> 7 sek = 100 pkt | każde 0.1s = 2 pkt</p>
-                    <p style="margin-top:10px;color:#dc3545;">Szybciej = więcej punktów | Puste pole = DNF (0 pkt)</p>
+                    <p><strong>Mezczyzni:</strong> 7 sek = 100 pkt | kazde 0.1s = 0.2 pkt</p>
+                    <p><strong>Kobiety:</strong> 7 sek = 100 pkt | kazde 0.1s = 2 pkt</p>
+                    <p style="margin-top:10px;color:#8b0000;"><strong>Szybciej = wiecej punktow | Puste = DNF (0 pkt)</strong></p>
                 </div>
                 <table>
                     <thead>
-                        <tr>
-                            <th>Lp.</th>
-                            <th>Zawodnik</th>
-                            <th>Drużyna</th>
-                            <th>Kat.</th>
-                            <th>Czas (sek)</th>
-                            <th>Punkty</th>
-                        </tr>
+                        <tr><th>Lp.</th><th>Zawodnik</th><th>Druzyna</th><th>Kat.</th><th>Czas (sek)</th><th>Punkty</th></tr>
                     </thead>
                     <tbody id="event1Body"></tbody>
                 </table>
                 <div style="margin-top:20px;text-align:center;">
-                    <button class="btn btn-primary" onclick="saveEventTimes(0)">Zapisz czasy i przejdź dalej</button>
+                    <button class="btn btn-primary" onclick="goToStep(2)">Przejdz do BTS</button>
                 </div>
             </div>
         </div>
@@ -295,57 +308,45 @@
         <!-- KROK 2: BTS -->
         <div id="step2" class="step-content">
             <div class="panel">
-                <h2>Konkurencja 2: BTS</h2>
+                <h2>KONKURENCJA 2: BTS</h2>
+                <div class="auto-save-info">Wyniki zapisuja sie automatycznie przy wpisywaniu</div>
                 <div class="event-info">
                     <h3>Punktacja</h3>
-                    <p><strong>Mężczyźni:</strong> 35 sek = 100 pkt | każde 0.1s = 1.5 pkt</p>
-                    <p><strong>Kobiety:</strong> 40 sek = 100 pkt | każde 0.1s = 1.5 pkt</p>
-                    <p style="margin-top:10px;color:#dc3545;">Szybciej = więcej punktów | Puste pole = DNF (0 pkt)</p>
+                    <p><strong>Mezczyzni:</strong> 35 sek = 100 pkt | kazde 0.1s = 1.5 pkt</p>
+                    <p><strong>Kobiety:</strong> 40 sek = 100 pkt | kazde 0.1s = 1.5 pkt</p>
+                    <p style="margin-top:10px;color:#8b0000;"><strong>Szybciej = wiecej punktow | Puste = DNF (0 pkt)</strong></p>
                 </div>
                 <table>
                     <thead>
-                        <tr>
-                            <th>Lp.</th>
-                            <th>Zawodnik</th>
-                            <th>Drużyna</th>
-                            <th>Kat.</th>
-                            <th>Czas (sek)</th>
-                            <th>Punkty</th>
-                        </tr>
+                        <tr><th>Lp.</th><th>Zawodnik</th><th>Druzyna</th><th>Kat.</th><th>Czas (sek)</th><th>Punkty</th></tr>
                     </thead>
                     <tbody id="event2Body"></tbody>
                 </table>
                 <div style="margin-top:20px;text-align:center;">
-                    <button class="btn btn-primary" onclick="saveEventTimes(1)">Zapisz czasy i przejdź dalej</button>
+                    <button class="btn btn-primary" onclick="goToStep(3)">Przejdz do Biegu wach.</button>
                 </div>
             </div>
         </div>
 
-        <!-- KROK 3: BIEG WAHADŁOWY -->
+        <!-- KROK 3: BIEG WAHADLOWY -->
         <div id="step3" class="step-content">
             <div class="panel">
-                <h2>Konkurencja 3: Bieg Wahadłowy</h2>
+                <h2>KONKURENCJA 3: BIEG WAHADLOWY</h2>
+                <div class="auto-save-info">Wyniki zapisuja sie automatycznie przy wpisywaniu</div>
                 <div class="event-info">
                     <h3>Punktacja</h3>
-                    <p><strong>Mężczyźni:</strong> 55 sek = 100 pkt | każde 0.1s = 1 pkt</p>
-                    <p><strong>Kobiety:</strong> 60 sek = 100 pkt | każde 0.1s = 1 pkt</p>
-                    <p style="margin-top:10px;color:#dc3545;">Szybciej = więcej punktów | Puste pole = DNF (0 pkt)</p>
+                    <p><strong>Mezczyzni:</strong> 55 sek = 100 pkt | kazde 0.1s = 1 pkt</p>
+                    <p><strong>Kobiety:</strong> 60 sek = 100 pkt | kazde 0.1s = 1 pkt</p>
+                    <p style="margin-top:10px;color:#8b0000;"><strong>Szybciej = wiecej punktow | Puste = DNF (0 pkt)</strong></p>
                 </div>
                 <table>
                     <thead>
-                        <tr>
-                            <th>Lp.</th>
-                            <th>Zawodnik</th>
-                            <th>Drużyna</th>
-                            <th>Kat.</th>
-                            <th>Czas (sek)</th>
-                            <th>Punkty</th>
-                        </tr>
+                        <tr><th>Lp.</th><th>Zawodnik</th><th>Druzyna</th><th>Kat.</th><th>Czas (sek)</th><th>Punkty</th></tr>
                     </thead>
                     <tbody id="event3Body"></tbody>
                 </table>
                 <div style="margin-top:20px;text-align:center;">
-                    <button class="btn btn-primary" onclick="saveEventTimes(2)">Zapisz czasy i przejdź dalej</button>
+                    <button class="btn btn-primary" onclick="goToStep(4)">Przejdz do Biegu 1000m</button>
                 </div>
             </div>
         </div>
@@ -353,29 +354,23 @@
         <!-- KROK 4: BIEG 1000M -->
         <div id="step4" class="step-content">
             <div class="panel">
-                <h2>Konkurencja 4: Bieg 1000m</h2>
+                <h2>KONKURENCJA 4: BIEG 1000m</h2>
+                <div class="auto-save-info">Wyniki zapisuja sie automatycznie przy wpisywaniu</div>
                 <div class="event-info">
                     <h3>Punktacja</h3>
-                    <p><strong>Mężczyźni:</strong> 3:10 (190s) = 100 pkt | każda 1s = 1 pkt</p>
-                    <p><strong>Kobiety:</strong> 4:00 (240s) = 100 pkt | każda 1s = 1 pkt</p>
+                    <p><strong>Mezczyzni:</strong> 3:10 (190s) = 100 pkt | kazda 1s = 1 pkt</p>
+                    <p><strong>Kobiety:</strong> 4:00 (240s) = 100 pkt | kazda 1s = 1 pkt</p>
                     <p style="margin-top:10px;">Format: sekundy (np. 195) lub mm:ss (np. 3:15)</p>
-                    <p style="color:#dc3545;">Szybciej = więcej punktów | Puste pole = DNF (0 pkt)</p>
+                    <p style="color:#8b0000;"><strong>Szybciej = wiecej punktow | Puste = DNF (0 pkt)</strong></p>
                 </div>
                 <table>
                     <thead>
-                        <tr>
-                            <th>Lp.</th>
-                            <th>Zawodnik</th>
-                            <th>Drużyna</th>
-                            <th>Kat.</th>
-                            <th>Czas</th>
-                            <th>Punkty</th>
-                        </tr>
+                        <tr><th>Lp.</th><th>Zawodnik</th><th>Druzyna</th><th>Kat.</th><th>Czas</th><th>Punkty</th></tr>
                     </thead>
                     <tbody id="event4Body"></tbody>
                 </table>
                 <div style="margin-top:20px;text-align:center;">
-                    <button class="btn btn-primary" onclick="saveEventTimes(3)">Zapisz czasy i pokaż wyniki</button>
+                    <button class="btn btn-primary" onclick="goToStep(5)">Pokaz wyniki koncowe</button>
                 </div>
             </div>
         </div>
@@ -383,58 +378,37 @@
         <!-- KROK 5: WYNIKI -->
         <div id="step5" class="step-content">
             <div class="panel">
-                <h2>Wyniki Końcowe</h2>
-
+                <h2>WYNIKI KONCOWE</h2>
                 <div class="category-filter">
                     <button class="active" onclick="filterResults('all', this)">Wszystkie</button>
-                    <button onclick="filterResults('M35-', this)">Mężczyźni do 35</button>
-                    <button onclick="filterResults('M35+', this)">Mężczyźni 35+</button>
+                    <button onclick="filterResults('M35-', this)">Mezczyzni do 35</button>
+                    <button onclick="filterResults('M35+', this)">Mezczyzni 35+</button>
                     <button onclick="filterResults('K35-', this)">Kobiety do 35</button>
                     <button onclick="filterResults('K35+', this)">Kobiety 35+</button>
                 </div>
-
                 <div style="margin-bottom:15px;">
-                    <button class="btn btn-secondary btn-sm" onclick="toggleResultsView('detailed')">Szczegółowe</button>
-                    <button class="btn btn-secondary btn-sm" onclick="toggleResultsView('short')">Skrócone</button>
+                    <button class="btn btn-secondary btn-sm" onclick="toggleResultsView('detailed')">Szczegolowe</button>
+                    <button class="btn btn-secondary btn-sm" onclick="toggleResultsView('short')">Skrocone</button>
                 </div>
-
                 <div id="detailedResultsDiv">
-                    <h3 style="color:#1a472a;margin-bottom:10px;">Klasyfikacja Indywidualna</h3>
+                    <h3 style="color:#1a2744;margin-bottom:10px;">Klasyfikacja Indywidualna</h3>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Poz.</th>
-                                <th>Imię i Nazwisko</th>
-                                <th>Drużyna</th>
-                                <th>Kat.</th>
-                                <th>Lina</th>
-                                <th>BTS</th>
-                                <th>Bieg wach.</th>
-                                <th>Bieg 1000m</th>
-                                <th>SUMA</th>
-                            </tr>
+                            <tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>Kat.</th><th>Lina</th><th>BTS</th><th>Bieg wach.</th><th>Bieg 1000m</th><th>SUMA</th></tr>
                         </thead>
                         <tbody id="finalResultsBody"></tbody>
                     </table>
                 </div>
-
                 <div id="shortResultsDiv" style="display:none;">
-                    <h3 style="color:#1a472a;margin-bottom:10px;">Klasyfikacja Indywidualna (skrócona)</h3>
+                    <h3 style="color:#1a2744;margin-bottom:10px;">Klasyfikacja Indywidualna (skrocona)</h3>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Poz.</th>
-                                <th>Imię i Nazwisko</th>
-                                <th>Drużyna</th>
-                                <th>Kat.</th>
-                                <th>SUMA PKT</th>
-                            </tr>
+                            <tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>Kat.</th><th>SUMA PKT</th></tr>
                         </thead>
                         <tbody id="shortResultsBody"></tbody>
                     </table>
                 </div>
-
-                <h3 style="color:#1a472a;margin:30px 0 10px;">Klasyfikacja Drużynowa</h3>
+                <h3 style="color:#1a2744;margin:30px 0 10px;">Klasyfikacja Druzynowa</h3>
                 <div id="teamResultsDiv"></div>
             </div>
         </div>
@@ -448,13 +422,13 @@
                 <button class="modal-close" onclick="closePDFModal()">&times;</button>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;">
-                <button class="btn btn-primary" onclick="printResults('all','detailed')">Wszystkie - szczegółowe</button>
-                <button class="btn btn-primary" onclick="printResults('all','short')">Wszystkie - skrócone</button>
-                <button class="btn btn-info" onclick="printResults('M35-','detailed')">Mężczyźni do 35</button>
-                <button class="btn btn-info" onclick="printResults('M35+','detailed')">Mężczyźni 35+</button>
-                <button class="btn btn-info" onclick="printResults('K35-','detailed')">Kobiety do 35</button>
-                <button class="btn btn-info" onclick="printResults('K35+','detailed')">Kobiety 35+</button>
-                <button class="btn btn-secondary" onclick="printResults('team','detailed')">Klasyfikacja drużynowa</button>
+                <button class="btn btn-primary" onclick="printResults('all','detailed')">Wszystkie - szczegolowe</button>
+                <button class="btn btn-primary" onclick="printResults('all','short')">Wszystkie - skrocone</button>
+                <button class="btn btn-secondary" onclick="printResults('M35-','detailed')">Mezczyzni do 35</button>
+                <button class="btn btn-secondary" onclick="printResults('M35+','detailed')">Mezczyzni 35+</button>
+                <button class="btn btn-secondary" onclick="printResults('K35-','detailed')">Kobiety do 35</button>
+                <button class="btn btn-secondary" onclick="printResults('K35+','detailed')">Kobiety 35+</button>
+                <button class="btn btn-secondary" onclick="printResults('team','detailed')">Klasyfikacja druzynowa</button>
             </div>
         </div>
     </div>
@@ -481,7 +455,6 @@
         var currentFilter = 'all';
         var liveWindow = null;
 
-        // === PARSOWANIE CZASU ===
         function parseTime(input) {
             if (!input || input.trim() === '') return null;
             var normalized = input.replace(',', '.').trim();
@@ -497,19 +470,17 @@
             return isNaN(result) ? null : Math.round(result * 10) / 10;
         }
 
-        // === FORMATOWANIE CZASU ===
         function formatTime(seconds) {
             if (seconds === null || seconds === undefined) return 'dnf';
             if (seconds >= 60) {
                 var mins = Math.floor(seconds / 60);
                 var secs = (seconds % 60).toFixed(1);
-                if (secs < 10) secs = '0' + secs;
+                if (parseFloat(secs) < 10) secs = '0' + secs;
                 return mins + ':' + secs;
             }
             return seconds.toFixed(1);
         }
 
-        // === OBLICZANIE PUNKTÓW ===
         function calculatePoints(time, eventIndex, gender) {
             if (time === null) return 0;
             var eventName = EVENT_NAMES[eventIndex];
@@ -525,20 +496,17 @@
             return Math.round(points * 10) / 10;
         }
 
-        // === NAWIGACJA KROKÓW ===
         function showStep(step) {
             currentStep = step;
             for (var i = 0; i <= 5; i++) {
                 document.getElementById('step' + i).classList.remove('active');
             }
             document.getElementById('step' + step).classList.add('active');
-
             var btns = document.querySelectorAll('.step-btn');
             for (var j = 0; j < btns.length; j++) {
                 btns[j].classList.remove('active');
             }
             btns[step].classList.add('active');
-
             if (step >= 1 && step <= 4) {
                 renderEventTable(step - 1);
             } else if (step === 5) {
@@ -546,14 +514,20 @@
             } else if (step === 0) {
                 renderRegistrationTable();
             }
-            updateLiveWindow();
         }
 
-        // === REJESTRACJA ZAWODNIKÓW ===
-        function addAthlete(e) {
+        function goToStep(step) {
+            var btns = document.querySelectorAll('.step-btn');
+            btns[currentStep].classList.add('completed');
+            showStep(step);
+        }
+
+        // === REJESTRACJA I EDYCJA ===
+        function saveAthlete(e) {
             e.preventDefault();
-            var athlete = {
-                id: Date.now().toString(),
+            var editId = document.getElementById('editAthleteId').value;
+            var athleteData = {
+                id: editId || Date.now().toString(),
                 firstName: document.getElementById('firstName').value.trim(),
                 lastName: document.getElementById('lastName').value.trim(),
                 team: document.getElementById('team').value.trim(),
@@ -562,51 +536,81 @@
                 points: [0, 0, 0, 0],
                 totalPoints: 0
             };
-            athletes.push(athlete);
+
+            if (editId) {
+                var existing = athletes.find(function(a) { return a.id === editId; });
+                if (existing) {
+                    athleteData.times = existing.times;
+                    athleteData.points = existing.points;
+                    athleteData.totalPoints = existing.totalPoints;
+                }
+                var idx = athletes.findIndex(function(a) { return a.id === editId; });
+                if (idx !== -1) athletes[idx] = athleteData;
+            } else {
+                athletes.push(athleteData);
+            }
+
             saveData();
-            document.getElementById('athleteForm').reset();
+            cancelEdit();
             renderRegistrationTable();
-            updateTeamsList();
-            updateLiveWindow();
+        }
+
+        function editAthlete(id) {
+            var athlete = athletes.find(function(a) { return a.id === id; });
+            if (!athlete) return;
+            document.getElementById('editAthleteId').value = athlete.id;
+            document.getElementById('firstName').value = athlete.firstName;
+            document.getElementById('lastName').value = athlete.lastName;
+            document.getElementById('team').value = athlete.team;
+            document.getElementById('category').value = athlete.category;
+            document.getElementById('submitBtn').textContent = 'Zapisz zmiany';
+            document.getElementById('cancelBtn').style.display = 'inline-block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            document.getElementById('editAthleteId').value = '';
+            document.getElementById('athleteForm').reset();
+            document.getElementById('submitBtn').textContent = 'Dodaj Zawodnika';
+            document.getElementById('cancelBtn').style.display = 'none';
         }
 
         function deleteAthlete(id) {
-            if (!confirm('Usunąć zawodnika?')) return;
+            if (!confirm('Usunac zawodnika?')) return;
             athletes = athletes.filter(function(a) { return a.id !== id; });
             saveData();
             renderRegistrationTable();
-            updateLiveWindow();
         }
 
         function renderRegistrationTable() {
             var tbody = document.getElementById('registrationBody');
             tbody.innerHTML = '';
             document.getElementById('athleteCount').textContent = athletes.length;
-
             athletes.forEach(function(a, i) {
                 var tr = document.createElement('tr');
                 tr.innerHTML = '<td>' + (i + 1) + '</td>' +
                     '<td>' + a.firstName + ' ' + a.lastName + '</td>' +
                     '<td>' + a.team + '</td>' +
                     '<td>' + getCategoryName(a.category) + '</td>' +
-                    '<td><button class="btn btn-danger btn-sm" onclick="deleteAthlete(\'' + a.id + '\')">Usuń</button></td>';
+                    '<td class="action-buttons">' +
+                    '<button class="btn btn-edit btn-sm" onclick="editAthlete(\'' + a.id + '\')">Edytuj</button>' +
+                    '<button class="btn btn-danger btn-sm" onclick="deleteAthlete(\'' + a.id + '\')">Usun</button>' +
+                    '</td>';
                 tbody.appendChild(tr);
             });
             updateTeamsList();
         }
 
-        // === TABELE KONKURENCJI ===
+        // === TABELE KONKURENCJI Z AUTO-ZAPISEM ===
         function renderEventTable(eventIndex) {
             var bodyId = 'event' + (eventIndex + 1) + 'Body';
             var tbody = document.getElementById(bodyId);
             tbody.innerHTML = '';
-
             athletes.forEach(function(a, i) {
                 var gender = a.category.charAt(0);
                 var currentTime = a.times[eventIndex];
                 var currentPoints = calculatePoints(currentTime, eventIndex, gender);
                 var timeValue = currentTime !== null ? currentTime.toString().replace('.', ',') : '';
-
                 var tr = document.createElement('tr');
                 tr.innerHTML = '<td>' + (i + 1) + '</td>' +
                     '<td>' + a.firstName + ' ' + a.lastName + '</td>' +
@@ -615,7 +619,7 @@
                     '<td><input type="text" class="time-input' + (currentTime !== null ? ' filled' : '') + '" ' +
                         'data-athlete="' + a.id + '" data-event="' + eventIndex + '" ' +
                         'value="' + timeValue + '" ' +
-                        'oninput="updatePointsPreview(this, ' + eventIndex + ', \'' + gender + '\')" ' +
+                        'oninput="autoSaveTime(this, ' + eventIndex + ', \'' + gender + '\')" ' +
                         'placeholder="-"></td>' +
                     '<td class="points-cell" id="pts_' + a.id + '_' + eventIndex + '">' +
                         (currentTime !== null ? currentPoints.toFixed(1) + ' pkt' : '-') + '</td>';
@@ -623,61 +627,45 @@
             });
         }
 
-        function updatePointsPreview(input, eventIndex, gender) {
+        function autoSaveTime(input, eventIndex, gender) {
             var time = parseTime(input.value);
             var athleteId = input.getAttribute('data-athlete');
-            var ptsCell = document.getElementById('pts_' + athleteId + '_' + eventIndex);
+            var athlete = athletes.find(function(a) { return a.id === athleteId; });
+            if (!athlete) return;
 
+            // Zapisz czas i przelicz punkty
+            athlete.times[eventIndex] = time;
+            athlete.points[eventIndex] = calculatePoints(time, eventIndex, gender);
+
+            // Przelicz sume
+            var total = 0;
+            for (var j = 0; j < 4; j++) {
+                total += athlete.points[j];
+            }
+            athlete.totalPoints = Math.round(total * 10) / 10;
+
+            // Zapisz do localStorage
+            saveData();
+
+            // Aktualizuj wyswietlanie punktow
+            var ptsCell = document.getElementById('pts_' + athleteId + '_' + eventIndex);
             if (time !== null) {
-                var pts = calculatePoints(time, eventIndex, gender);
-                ptsCell.textContent = pts.toFixed(1) + ' pkt';
-                ptsCell.style.color = pts >= 100 ? '#28a745' : '#666';
+                ptsCell.textContent = athlete.points[eventIndex].toFixed(1) + ' pkt';
+                ptsCell.style.color = athlete.points[eventIndex] >= 100 ? '#4a5a3a' : '#4a5568';
                 input.classList.add('filled');
             } else {
                 ptsCell.textContent = input.value.trim() === '' ? '-' : 'DNF (0)';
-                ptsCell.style.color = '#dc3545';
+                ptsCell.style.color = '#8b0000';
                 input.classList.remove('filled');
             }
         }
 
-        function saveEventTimes(eventIndex) {
-            var inputs = document.querySelectorAll('#event' + (eventIndex + 1) + 'Body input.time-input');
-
-            inputs.forEach(function(input) {
-                var athleteId = input.getAttribute('data-athlete');
-                var time = parseTime(input.value);
-                var athlete = athletes.find(function(a) { return a.id === athleteId; });
-
-                if (athlete) {
-                    var gender = athlete.category.charAt(0);
-                    athlete.times[eventIndex] = time;
-                    athlete.points[eventIndex] = calculatePoints(time, eventIndex, gender);
-
-                    var total = 0;
-                    for (var j = 0; j < 4; j++) {
-                        total += athlete.points[j];
-                    }
-                    athlete.totalPoints = Math.round(total * 10) / 10;
-                }
-            });
-
-            saveData();
-            updateLiveWindow();
-
-            // Oznacz krok jako ukończony i przejdź dalej
-            var btns = document.querySelectorAll('.step-btn');
-            btns[eventIndex + 1].classList.add('completed');
-            showStep(eventIndex + 2);
-        }
-
-        // === WYNIKI KOŃCOWE ===
+        // === WYNIKI ===
         function renderFinalResults() {
             var filtered = currentFilter === 'all' ? athletes.slice() :
                 athletes.filter(function(a) { return a.category === currentFilter; });
-
             filtered.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
 
-            // Szczegółowe
             var tbody = document.getElementById('finalResultsBody');
             tbody.innerHTML = '';
             filtered.forEach(function(a, i) {
@@ -694,7 +682,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Skrócone
             var shortBody = document.getElementById('shortResultsBody');
             shortBody.innerHTML = '';
             filtered.forEach(function(a, i) {
@@ -707,7 +694,6 @@
                 shortBody.appendChild(tr);
             });
 
-            // Drużynowe
             renderTeamResults();
         }
 
@@ -717,7 +703,6 @@
                 if (!teams[a.team]) teams[a.team] = [];
                 teams[a.team].push(a);
             });
-
             var teamScores = Object.keys(teams).map(function(name) {
                 var members = teams[name];
                 members.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
@@ -726,12 +711,9 @@
                 top7.forEach(function(m) { totalScore += m.totalPoints; });
                 return { name: name, top7: top7, members: members, totalScore: Math.round(totalScore * 10) / 10 };
             });
-
             teamScores.sort(function(a, b) { return b.totalScore - a.totalScore; });
-
             var container = document.getElementById('teamResultsDiv');
             container.innerHTML = '';
-
             teamScores.forEach(function(team, i) {
                 var card = document.createElement('div');
                 card.className = 'team-card';
@@ -743,36 +725,27 @@
                 card.innerHTML = '<h3>' + (i + 1) + '. ' + team.name + '</h3>' +
                     '<div class="team-total">Suma: ' + team.totalScore.toFixed(1) + ' pkt</div>' +
                     '<p style="margin-top:10px;"><strong>7 najlepszych:</strong></p>' + top7Html +
-                    '<p style="color:#666;margin-top:10px;">Łącznie zawodników: ' + team.members.length + '</p>';
+                    '<p style="color:#4a5568;margin-top:10px;">Lacznie zawodnikow: ' + team.members.length + '</p>';
                 container.appendChild(card);
             });
         }
 
         function formatTimeWithPoints(time, points) {
-            if (time === null) {
-                return '<span class="dnf">dnf</span><br><small>(0 pkt)</small>';
-            }
+            if (time === null) return '<span class="dnf">dnf</span><br><small>(0 pkt)</small>';
             return formatTime(time) + '<br><small>(' + points.toFixed(1) + ' pkt)</small>';
         }
 
         function filterResults(cat, btn) {
             currentFilter = cat;
             var btns = document.querySelectorAll('.category-filter button');
-            for (var i = 0; i < btns.length; i++) {
-                btns[i].classList.remove('active');
-            }
+            for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
             if (btn) btn.classList.add('active');
             renderFinalResults();
         }
 
         function toggleResultsView(view) {
-            if (view === 'detailed') {
-                document.getElementById('detailedResultsDiv').style.display = 'block';
-                document.getElementById('shortResultsDiv').style.display = 'none';
-            } else {
-                document.getElementById('detailedResultsDiv').style.display = 'none';
-                document.getElementById('shortResultsDiv').style.display = 'block';
-            }
+            document.getElementById('detailedResultsDiv').style.display = view === 'detailed' ? 'block' : 'none';
+            document.getElementById('shortResultsDiv').style.display = view === 'short' ? 'block' : 'none';
         }
 
         function getCategoryName(cat) {
@@ -780,7 +753,6 @@
             return names[cat] || cat;
         }
 
-        // === ZAPIS/ODCZYT ===
         function saveData() {
             localStorage.setItem('athletes', JSON.stringify(athletes));
         }
@@ -816,29 +788,27 @@
             reader.onload = function(ev) {
                 try {
                     var imported = JSON.parse(ev.target.result);
-                    if (Array.isArray(imported) && confirm('Zaimportować ' + imported.length + ' zawodników?')) {
+                    if (Array.isArray(imported) && confirm('Zaimportowac ' + imported.length + ' zawodnikow?')) {
                         athletes = imported;
                         saveData();
                         showStep(0);
-                        alert('Import zakończony!');
+                        alert('Import zakonczony!');
                     }
-                } catch (err) {
-                    alert('Błąd importu!');
-                }
+                } catch (err) { alert('Blad importu!'); }
             };
             reader.readAsText(file);
             e.target.value = '';
         }
 
         function clearAllData() {
-            if (confirm('Usunąć WSZYSTKIE dane?')) {
+            if (confirm('Usunac WSZYSTKIE dane?')) {
                 athletes = [];
                 saveData();
                 showStep(0);
             }
         }
 
-        // === DRUGIE OKNO ===
+        // === DRUGIE OKNO - PROFESJONALNE KOLORY ===
         function openLiveWindow() {
             if (liveWindow && !liveWindow.closed) {
                 liveWindow.focus();
@@ -850,20 +820,12 @@
 
         function writeLiveWindowContent() {
             if (!liveWindow || liveWindow.closed) return;
-
-            // Przygotuj dane dla każdej kategorii
             var categories = ['M35-', 'M35+', 'K35-', 'K35+'];
             var categoryNames = {
                 'M35-': 'MEZCZYZNI do 35 lat',
                 'M35+': 'MEZCZYZNI 35+',
                 'K35-': 'KOBIETY do 35 lat',
                 'K35+': 'KOBIETY 35+'
-            };
-            var categoryColors = {
-                'M35-': '#1565c0',
-                'M35+': '#0d47a1',
-                'K35-': '#c2185b',
-                'K35+': '#880e4f'
             };
 
             var categoryData = {};
@@ -873,7 +835,6 @@
                 categoryData[cat] = filtered;
             });
 
-            // Generuj HTML dla każdej kategorii
             function buildCategoryHtml(cat) {
                 var data = categoryData[cat];
                 var rows = '';
@@ -888,11 +849,10 @@
                         '<td>' + (a.times[1] !== null ? a.points[1].toFixed(1) : '<span class="dnf">-</span>') + '</td>' +
                         '<td>' + (a.times[2] !== null ? a.points[2].toFixed(1) : '<span class="dnf">-</span>') + '</td>' +
                         '<td>' + (a.times[3] !== null ? a.points[3].toFixed(1) : '<span class="dnf">-</span>') + '</td>' +
-                        '<td class="total">' + a.totalPoints.toFixed(1) + '</td>' +
-                        '</tr>';
+                        '<td class="total">' + a.totalPoints.toFixed(1) + '</td></tr>';
                 }
                 if (data.length === 0) {
-                    rows = '<tr><td colspan="8" style="color:#999;padding:20px;">Brak zawodników</td></tr>';
+                    rows = '<tr><td colspan="8" style="color:#666;padding:20px;">Brak zawodnikow</td></tr>';
                 }
                 return rows;
             }
@@ -901,40 +861,38 @@
                 '<title>Klasyfikacja NA ZYWO</title>' +
                 '<style>' +
                 '* { margin: 0; padding: 0; box-sizing: border-box; }' +
-                'body { font-family: Segoe UI, sans-serif; background: #1a1a2e; height: 100vh; overflow: hidden; }' +
-                '.header { background: linear-gradient(135deg, #1a472a, #2d5a3d); padding: 10px; text-align: center; color: white; }' +
-                '.header h1 { font-size: 1.5em; margin-bottom: 5px; }' +
-                '.live-dot { display: inline-block; width: 10px; height: 10px; background: #ff0000; border-radius: 50%; margin-right: 8px; animation: pulse 1s infinite; }' +
-                '@keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 10px #ff0000; } 50% { opacity: 0.5; box-shadow: none; } }' +
-                '.update-time { font-size: 0.9em; opacity: 0.8; }' +
-                '.grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: calc(100vh - 70px); gap: 4px; padding: 4px; }' +
-                '.category-box { background: white; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }' +
-                '.category-header { padding: 8px 12px; color: white; font-weight: 700; font-size: 1em; text-transform: uppercase; }' +
-                '.category-header.m35m { background: ' + categoryColors['M35-'] + '; }' +
-                '.category-header.m35p { background: ' + categoryColors['M35+'] + '; }' +
-                '.category-header.k35m { background: ' + categoryColors['K35-'] + '; }' +
-                '.category-header.k35p { background: ' + categoryColors['K35+'] + '; }' +
+                'body { font-family: Segoe UI, sans-serif; background: #1a1a1a; height: 100vh; overflow: hidden; }' +
+                '.header { background: linear-gradient(135deg, #2c3e50, #1a2744); padding: 12px; text-align: center; color: white; border-bottom: 3px solid #4a5a3a; }' +
+                '.header h1 { font-size: 1.4em; letter-spacing: 2px; }' +
+                '.live-dot { display: inline-block; width: 10px; height: 10px; background: #c0392b; border-radius: 50%; margin-right: 10px; animation: pulse 1s infinite; }' +
+                '@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }' +
+                '.update-time { font-size: 0.85em; opacity: 0.7; margin-top: 3px; }' +
+                '.grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: calc(100vh - 75px); gap: 3px; padding: 3px; background: #1a1a1a; }' +
+                '.category-box { background: #f5f5f0; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; }' +
+                '.category-header { padding: 8px 12px; color: white; font-weight: 700; font-size: 0.95em; letter-spacing: 1px; }' +
+                '.category-header.m35m { background: linear-gradient(135deg, #2c3e50, #1a2744); }' +
+                '.category-header.m35p { background: linear-gradient(135deg, #1a2744, #0d1421); }' +
+                '.category-header.k35m { background: linear-gradient(135deg, #4a5a3a, #3d4a30); }' +
+                '.category-header.k35p { background: linear-gradient(135deg, #3d4a30, #2d3623); }' +
                 '.scroll-container { flex: 1; overflow: hidden; position: relative; }' +
-                '.scroll-content { position: absolute; width: 100%; animation: none; }' +
-                'table { width: 100%; border-collapse: collapse; font-size: 0.85em; }' +
-                'th { background: #f0f0f0; padding: 6px 4px; font-weight: 600; position: sticky; top: 0; }' +
-                'td { padding: 5px 4px; text-align: center; border-bottom: 1px solid #eee; }' +
-                '.rank { font-weight: 700; width: 35px; }' +
-                '.name { text-align: left !important; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }' +
-                '.total { font-weight: 700; color: #1a472a; font-size: 1.1em; }' +
-                '.dnf { color: #dc3545; }' +
-                '.gold { background: linear-gradient(90deg, #ffd700 0%, #fff8dc 100%) !important; }' +
-                '.silver { background: linear-gradient(90deg, #c0c0c0 0%, #e8e8e8 100%) !important; }' +
-                '.bronze { background: linear-gradient(90deg, #cd7f32 0%, #deb887 100%) !important; }' +
-                '@keyframes scrollUp { 0%, 10% { transform: translateY(0); } 90%, 100% { transform: translateY(var(--scroll-distance)); } }' +
+                '.scroll-content { position: absolute; width: 100%; }' +
+                'table { width: 100%; border-collapse: collapse; font-size: 0.8em; }' +
+                'th { background: #e8e8e0; padding: 5px 3px; font-weight: 600; color: #1a2744; }' +
+                'td { padding: 4px 3px; text-align: center; border-bottom: 1px solid #ddd; }' +
+                '.rank { font-weight: 700; width: 30px; color: #1a2744; }' +
+                '.name { text-align: left !important; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }' +
+                '.total { font-weight: 700; color: #2c3e50; }' +
+                '.dnf { color: #8b0000; }' +
+                '.gold { background: linear-gradient(90deg, #c9a227 0%, #f5e6a3 50%, #c9a227 100%) !important; }' +
+                '.silver { background: linear-gradient(90deg, #71706e 0%, #d1d1d1 50%, #71706e 100%) !important; }' +
+                '.bronze { background: linear-gradient(90deg, #6d4c30 0%, #cd7f32 50%, #6d4c30 100%) !important; }' +
+                '@keyframes scrollUp { 0%, 15% { transform: translateY(0); } 85%, 100% { transform: translateY(var(--scroll-distance)); } }' +
                 '</style></head><body>' +
                 '<div class="header">' +
                 '<h1><span class="live-dot"></span>WIELOBOJ ZOLNIERSKI - KLASYFIKACJA NA ZYWO</h1>' +
                 '<div class="update-time">Aktualizacja: ' + new Date().toLocaleTimeString('pl-PL') + '</div>' +
-                '</div>' +
-                '<div class="grid">';
+                '</div><div class="grid">';
 
-            // Dodaj 4 kategorie
             categories.forEach(function(cat, idx) {
                 var headerClass = cat === 'M35-' ? 'm35m' : cat === 'M35+' ? 'm35p' : cat === 'K35-' ? 'k35m' : 'k35p';
                 html += '<div class="category-box">' +
@@ -948,8 +906,7 @@
                     '</div></div></div>';
             });
 
-            html += '</div>' +
-                '<script>' +
+            html += '</div><script>' +
                 'function setupScroll() {' +
                 '  for (var i = 0; i < 4; i++) {' +
                 '    var container = document.getElementById("scroll" + i);' +
@@ -960,45 +917,30 @@
                 '      if (contentHeight > containerHeight) {' +
                 '        var distance = -(contentHeight - containerHeight);' +
                 '        content.style.setProperty("--scroll-distance", distance + "px");' +
-                '        content.style.animation = "scrollUp 15s linear infinite";' +
+                '        content.style.animation = "scrollUp 12s linear infinite";' +
                 '      }' +
                 '    }' +
                 '  }' +
                 '}' +
                 'setTimeout(setupScroll, 100);' +
-                'window.addEventListener("storage", function(e) {' +
-                '  if (e.key === "athletes") { location.reload(); }' +
-                '});' +
                 'setInterval(function() {' +
                 '  var stored = localStorage.getItem("athletes");' +
                 '  if (stored !== window.lastData) { window.lastData = stored; location.reload(); }' +
                 '}, 2000);' +
                 'window.lastData = localStorage.getItem("athletes");' +
-                '<\/script>' +
-                '</body></html>';
+                '<\/script></body></html>';
 
             liveWindow.document.open();
             liveWindow.document.write(html);
             liveWindow.document.close();
         }
 
-        function updateLiveWindow() {
-            // Zapisz do localStorage - okno live samo się zaktualizuje
-            saveData();
-        }
-
         // === PDF ===
-        function showPDFModal() {
-            document.getElementById('pdfModal').classList.add('active');
-        }
-
-        function closePDFModal() {
-            document.getElementById('pdfModal').classList.remove('active');
-        }
+        function showPDFModal() { document.getElementById('pdfModal').classList.add('active'); }
+        function closePDFModal() { document.getElementById('pdfModal').classList.remove('active'); }
 
         function printResults(category, type) {
             closePDFModal();
-
             var filtered = (category === 'all' || category === 'team') ? athletes.slice() :
                 athletes.filter(function(a) { return a.category === category; });
             filtered.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
@@ -1006,18 +948,18 @@
             var html = '<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8">' +
                 '<title>Wyniki Wieloboju</title><style>' +
                 'body { font-family: Arial, sans-serif; padding: 20px; }' +
-                'h1 { text-align: center; color: #1a472a; }' +
-                'h2 { color: #4a7c59; margin-top: 20px; }' +
+                'h1 { text-align: center; color: #1a2744; border-bottom: 3px solid #4a5a3a; padding-bottom: 10px; }' +
+                'h2 { color: #2c3e50; margin-top: 20px; }' +
                 'table { width: 100%; border-collapse: collapse; margin-top: 15px; }' +
-                'th, td { padding: 8px; text-align: center; border: 1px solid #ddd; }' +
-                'th { background: #1a472a; color: white; }' +
-                'tr:nth-child(even) { background: #f8f9fa; }' +
+                'th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }' +
+                'th { background: #1a2744; color: white; }' +
+                'tr:nth-child(even) { background: #f0f0e8; }' +
                 '.rank { font-weight: bold; }' +
-                '.total { font-weight: bold; color: #4a7c59; }' +
-                '.dnf { color: #dc3545; }' +
+                '.total { font-weight: bold; color: #2c3e50; }' +
+                '.dnf { color: #8b0000; }' +
                 '@media print { th { background: #333 !important; -webkit-print-color-adjust: exact; } }' +
                 '</style></head><body>' +
-                '<h1>Wielobój Żołnierski - Wyniki</h1>' +
+                '<h1>WIELOBOJ ZOLNIERSKI - WYNIKI</h1>' +
                 '<p style="text-align:center;">Data: ' + new Date().toLocaleDateString('pl-PL') + '</p>';
 
             if (category === 'team') {
@@ -1025,9 +967,8 @@
             } else {
                 var catName = category === 'all' ? 'Wszystkie kategorie' : getCategoryName(category);
                 html += '<h2>' + catName + '</h2>';
-
                 if (type === 'detailed') {
-                    html += '<table><thead><tr><th>Poz.</th><th>Imię i Nazwisko</th><th>Drużyna</th><th>Kat.</th>' +
+                    html += '<table><thead><tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>Kat.</th>' +
                         '<th>Lina</th><th>BTS</th><th>Bieg wach.</th><th>Bieg 1000m</th><th>SUMA</th></tr></thead><tbody>';
                     for (var i = 0; i < filtered.length; i++) {
                         var a = filtered[i];
@@ -1041,7 +982,7 @@
                     }
                     html += '</tbody></table>';
                 } else {
-                    html += '<table><thead><tr><th>Poz.</th><th>Imię i Nazwisko</th><th>Drużyna</th><th>Kat.</th><th>SUMA PKT</th></tr></thead><tbody>';
+                    html += '<table><thead><tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>Kat.</th><th>SUMA PKT</th></tr></thead><tbody>';
                     for (var j = 0; j < filtered.length; j++) {
                         var b = filtered[j];
                         html += '<tr><td class="rank">' + (j+1) + '</td><td>' + b.firstName + ' ' + b.lastName + '</td>' +
@@ -1051,10 +992,8 @@
                     html += '</tbody></table>';
                 }
             }
-
             html += '<div style="margin-top:30px;text-align:center;color:#666;font-size:12px;">Wygenerowano: ' +
                 new Date().toLocaleString('pl-PL') + '</div></body></html>';
-
             var printWin = window.open('', '_blank');
             printWin.document.write(html);
             printWin.document.close();
@@ -1067,7 +1006,6 @@
                 if (!teams[a.team]) teams[a.team] = [];
                 teams[a.team].push(a);
             });
-
             var teamScores = Object.keys(teams).map(function(name) {
                 var members = teams[name];
                 members.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
@@ -1077,15 +1015,13 @@
                 return { name: name, top7: top7, totalScore: Math.round(total * 10) / 10 };
             });
             teamScores.sort(function(a, b) { return b.totalScore - a.totalScore; });
-
-            var html = '<h2>Klasyfikacja Drużynowa</h2>';
-            html += '<table><thead><tr><th>Poz.</th><th>Drużyna</th><th>Suma punktów</th></tr></thead><tbody>';
+            var html = '<h2>Klasyfikacja Druzynowa</h2>';
+            html += '<table><thead><tr><th>Poz.</th><th>Druzyna</th><th>Suma punktow</th></tr></thead><tbody>';
             for (var i = 0; i < teamScores.length; i++) {
                 var t = teamScores[i];
                 html += '<tr><td class="rank">' + (i+1) + '</td><td>' + t.name + '</td><td class="total">' + t.totalScore.toFixed(1) + '</td></tr>';
             }
             html += '</tbody></table>';
-
             for (var j = 0; j < teamScores.length; j++) {
                 var team = teamScores[j];
                 html += '<h3 style="margin-top:20px;">' + (j+1) + '. ' + team.name + ' (' + team.totalScore.toFixed(1) + ' pkt)</h3>';
@@ -1099,7 +1035,6 @@
             return html;
         }
 
-        // === INICJALIZACJA ===
         document.addEventListener('DOMContentLoaded', function() {
             renderRegistrationTable();
             updateTeamsList();
