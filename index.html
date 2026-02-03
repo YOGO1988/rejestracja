@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wielobój Żołnierski - System Wyników</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.2em;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4a7c59;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5d9970;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7d8a93;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e4606d;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #3ab5c6;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .panel h2 {
+            color: #1a472a;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a7c59;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4a7c59;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .time-input-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .time-input-group label {
+            display: block;
+            font-weight: 600;
+            color: #1a472a;
+            margin-bottom: 8px;
+        }
+
+        .time-input-group small {
+            display: block;
+            color: #666;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .time-input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .time-input-group input:focus {
+            outline: none;
+            border-color: #4a7c59;
+        }
+
+        .points-preview {
+            font-size: 14px;
+            color: #4a7c59;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .results-table th, .results-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results-table th {
+            background: #1a472a;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .results-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .results-table tr:hover {
+            background: #e8f5e9;
+        }
+
+        .results-table .rank {
+            font-weight: 700;
+            color: #1a472a;
+        }
+
+        .results-table .total-points {
+            font-weight: 700;
+            color: #4a7c59;
+            font-size: 1.1em;
+        }
+
+        .dnf {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .category-filter button {
+            padding: 8px 16px;
+            border: 2px solid #4a7c59;
+            background: white;
+            color: #4a7c59;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .category-filter button.active, .category-filter button:hover {
+            background: #4a7c59;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .tab.active {
+            background: #4a7c59;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .athlete-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .athlete-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .athlete-item:hover {
+            background: #f8f9fa;
+        }
+
+        .team-results {
+            margin-top: 20px;
+        }
+
+        .team-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .team-card h3 {
+            color: #1a472a;
+            margin-bottom: 10px;
+        }
+
+        .team-card .team-total {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #4a7c59;
+        }
+
+        @media (max-width: 768px) {
+            .time-inputs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 10px;
+            }
+
+            .btn, .header-buttons, .tabs, .category-filter {
+                display: none !important;
+            }
+
+            .panel {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .results-table th {
+                background: #333 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎖️ Wielobój Żołnierski - System Wyników</h1>
+
+        <div class="header-buttons">
+            <button class="btn btn-primary" onclick="openLiveWindow()">📺 Otwórz Ekran Klasyfikacji</button>
+            <button class="btn btn-info" onclick="showPDFOptions()">📄 Generuj PDF</button>
+            <button class="btn btn-secondary" onclick="exportData()">💾 Eksportuj Dane</button>
+            <button class="btn btn-secondary" onclick="importData()">📁 Importuj Dane</button>
+            <button class="btn btn-danger" onclick="clearAllData()">🗑️ Wyczyść Wszystko</button>
+        </div>
+
+        <!-- Panel dodawania zawodnika -->
+        <div class="panel">
+            <h2>➕ Dodaj / Edytuj Zawodnika</h2>
+            <form id="athleteForm" onsubmit="saveAthlete(event)">
+                <input type="hidden" id="editId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">Imię *</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Nazwisko *</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="team">Drużyna *</label>
+                        <input type="text" id="team" required list="teamsList">
+                        <datalist id="teamsList"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Kategoria *</label>
+                        <select id="category" required>
+                            <option value="">-- Wybierz --</option>
+                            <option value="M35-">Mężczyźni do 35 lat</option>
+                            <option value="M35+">Mężczyźni 35+</option>
+                            <option value="K35-">Kobiety do 35 lat</option>
+                            <option value="K35+">Kobiety 35+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin: 20px 0 10px; color: #1a472a;">⏱️ Czasy konkurencji (pozostaw puste jeśli DNF)</h3>
+                <div class="time-inputs">
+                    <div class="time-input-group">
+                        <label>1. Lina</label>
+                        <small id="linaInfo">M: 7s=100pkt | K: 7s=100pkt</small>
+                        <input type="text" id="time1" placeholder="np. 7.5" oninput="updatePointsPreview()">
+                        <div class="points-preview" id="preview1">-</div>
+                    </div>
+                    <div class="time-input-group">
+                        <label>2. BTS</label>
+                        <small id="btsInfo">M: 35s=100pkt | K: 40s=100pkt</small>
+                        <input type="text" id="time2" placeholder="np. 35.0" oninput="updatePointsPreview()">
+                        <div class="points-preview" id="preview2">-</div>
+                    </div>
+                    <div class="time-input-group">
+                        <label>3. Bieg wahadłowy</label>
+                        <small id="biegWInfo">M: 55s=100pkt | K: 60s=100pkt</small>
+                        <input type="text" id="time3" placeholder="np. 55.0" oninput="updatePointsPreview()">
+                        <div class="points-preview" id="preview3">-</div>
+                    </div>
+                    <div class="time-input-group">
+                        <label>4. Bieg 1000m</label>
+                        <small id="bieg1000Info">M: 3:10=100pkt | K: 4:00=100pkt</small>
+                        <input type="text" id="time4" placeholder="np. 3:10 lub 190" oninput="updatePointsPreview()">
+                        <div class="points-preview" id="preview4">-</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary">💾 Zapisz Zawodnika</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Resetuj Formularz</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Panel wyników -->
+        <div class="panel">
+            <h2>📊 Wyniki</h2>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('individual')">Indywidualne</button>
+                <button class="tab" onclick="showTab('team')">Drużynowe</button>
+            </div>
+
+            <div id="individual" class="tab-content active">
+                <div class="category-filter">
+                    <button class="active" onclick="filterCategory('all', this)">Wszystkie</button>
+                    <button onclick="filterCategory('M35-', this)">Mężczyźni do 35</button>
+                    <button onclick="filterCategory('M35+', this)">Mężczyźni 35+</button>
+                    <button onclick="filterCategory('K35-', this)">Kobiety do 35</button>
+                    <button onclick="filterCategory('K35+', this)">Kobiety 35+</button>
+                </div>
+
+                <div class="tabs" style="margin-top: 15px;">
+                    <button class="tab active" onclick="showResultsView('detailed')">Szczegółowe</button>
+                    <button class="tab" onclick="showResultsView('short')">Skrócone</button>
+                </div>
+
+                <div id="detailedResults">
+                    <table class="results-table" id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Poz.</th>
+                                <th>Imię i Nazwisko</th>
+                                <th>Drużyna</th>
+                                <th>Kategoria</th>
+                                <th>Lina</th>
+                                <th>BTS</th>
+                                <th>Bieg wach.</th>
+                                <th>Bieg 1000m</th>
+                                <th>SUMA</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="shortResults" style="display: none;">
+                    <table class="results-table" id="shortResultsTable">
+                        <thead>
+                            <tr>
+                                <th>Poz.</th>
+                                <th>Imię i Nazwisko</th>
+                                <th>Drużyna</th>
+                                <th>Kategoria</th>
+                                <th>SUMA PKT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shortResultsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="team" class="tab-content">
+                <div class="team-results" id="teamResults">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal PDF -->
+    <div class="modal" id="pdfModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📄 Generuj PDF</h2>
+                <button class="modal-close" onclick="closePDFModal()">&times;</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-primary" onclick="printResults('all', 'detailed')">Wszystkie wyniki - szczegółowe</button>
+                <button class="btn btn-primary" onclick="printResults('all', 'short')">Wszystkie wyniki - skrócone</button>
+                <button class="btn btn-info" onclick="printResults('M35-', 'detailed')">Mężczyźni do 35 - szczegółowe</button>
+                <button class="btn btn-info" onclick="printResults('M35+', 'detailed')">Mężczyźni 35+ - szczegółowe</button>
+                <button class="btn btn-info" onclick="printResults('K35-', 'detailed')">Kobiety do 35 - szczegółowe</button>
+                <button class="btn btn-info" onclick="printResults('K35+', 'detailed')">Kobiety 35+ - szczegółowe</button>
+                <button class="btn btn-secondary" onclick="printResults('team', 'detailed')">Klasyfikacja drużynowa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden input for import -->
+    <input type="file" id="importFile" style="display: none" accept=".json" onchange="handleImport(event)">
+
+    <script>
+        // === KONFIGURACJA PUNKTACJI ===
+        const SCORING = {
+            // Mężczyźni
+            M: {
+                lina: { base: 7, points: 100, perTenth: 0.2 },      // za 0.1s = 0.2 pkt
+                bts: { base: 35, points: 100, perTenth: 1.5 },      // za 0.1s = 1.5 pkt
+                biegW: { base: 55, points: 100, perTenth: 1.0 },    // za 0.1s = 1 pkt
+                bieg1000: { base: 190, points: 100, perSec: 1.0 }   // za 1s = 1 pkt (3:10 = 190s)
+            },
+            // Kobiety
+            K: {
+                lina: { base: 7, points: 100, perTenth: 2.0 },      // za 0.1s = 2 pkt
+                bts: { base: 40, points: 100, perTenth: 1.5 },      // za 0.1s = 1.5 pkt
+                biegW: { base: 60, points: 100, perTenth: 1.0 },    // za 0.1s = 1 pkt
+                bieg1000: { base: 240, points: 100, perSec: 1.0 }   // za 1s = 1 pkt (4:00 = 240s)
+            }
+        };
+
+        // Dane zawodników
+        let athletes = JSON.parse(localStorage.getItem('athletes') || '[]');
+        let currentFilter = 'all';
+        let currentView = 'detailed';
+        let liveWindow = null;
+
+        // === PARSOWANIE CZASU ===
+        function parseTime(input) {
+            if (!input || input.trim() === '') return null;
+
+            // Zamień przecinek na kropkę
+            let normalized = input.replace(',', '.').trim();
+
+            // Sprawdź format mm:ss lub m:ss
+            if (normalized.includes(':')) {
+                const parts = normalized.split(':');
+                if (parts.length === 2) {
+                    const minutes = parseFloat(parts[0]) || 0;
+                    const seconds = parseFloat(parts[1]) || 0;
+                    return minutes * 60 + seconds;
+                }
+            }
+
+            // Zwykła liczba (sekundy)
+            const result = parseFloat(normalized);
+            return isNaN(result) ? null : result;
+        }
+
+        // === FORMATOWANIE CZASU ===
+        function formatTime(seconds) {
+            if (seconds === null || seconds === undefined) return 'dnf';
+
+            if (seconds >= 60) {
+                const mins = Math.floor(seconds / 60);
+                const secs = (seconds % 60).toFixed(1);
+                return `${mins}:${secs.padStart(4, '0')}`;
+            }
+            return seconds.toFixed(1);
+        }
+
+        // === OBLICZANIE PUNKTÓW ===
+        function calculatePoints(time, eventType, gender) {
+            if (time === null) return 0;
+
+            const scoring = SCORING[gender][eventType];
+
+            if (eventType === 'bieg1000') {
+                // Bieg 1000m - za każdą sekundę
+                const diff = scoring.base - time;
+                return Math.round((scoring.points + diff * scoring.perSec) * 10) / 10;
+            } else {
+                // Pozostałe konkurencje - za każde 0.1s
+                const diffTenths = (scoring.base - time) * 10;
+                return Math.round((scoring.points + diffTenths * scoring.perTenth) * 10) / 10;
+            }
+        }
+
+        // === PODGLĄD PUNKTÓW ===
+        function updatePointsPreview() {
+            const category = document.getElementById('category').value;
+            if (!category) {
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`preview${i}`).textContent = 'Wybierz kategorię';
+                }
+                return;
+            }
+
+            const gender = category.startsWith('M') ? 'M' : 'K';
+            const events = ['lina', 'bts', 'biegW', 'bieg1000'];
+
+            for (let i = 1; i <= 4; i++) {
+                const time = parseTime(document.getElementById(`time${i}`).value);
+                const preview = document.getElementById(`preview${i}`);
+
+                if (time === null) {
+                    preview.textContent = 'DNF (0 pkt)';
+                    preview.style.color = '#dc3545';
+                } else {
+                    const points = calculatePoints(time, events[i-1], gender);
+                    preview.textContent = `${points.toFixed(1)} pkt`;
+                    preview.style.color = points >= 100 ? '#28a745' : '#4a7c59';
+                }
+            }
+        }
+
+        // === ZAPISYWANIE ZAWODNIKA ===
+        function saveAthlete(event) {
+            event.preventDefault();
+
+            const editId = document.getElementById('editId').value;
+            const category = document.getElementById('category').value;
+            const gender = category.startsWith('M') ? 'M' : 'K';
+
+            const times = [
+                parseTime(document.getElementById('time1').value),
+                parseTime(document.getElementById('time2').value),
+                parseTime(document.getElementById('time3').value),
+                parseTime(document.getElementById('time4').value)
+            ];
+
+            const events = ['lina', 'bts', 'biegW', 'bieg1000'];
+            const points = times.map((t, i) => calculatePoints(t, events[i], gender));
+            const totalPoints = points.reduce((a, b) => a + b, 0);
+
+            const athlete = {
+                id: editId || Date.now().toString(),
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                team: document.getElementById('team').value.trim(),
+                category: category,
+                times: times,
+                points: points,
+                totalPoints: Math.round(totalPoints * 10) / 10
+            };
+
+            if (editId) {
+                const index = athletes.findIndex(a => a.id === editId);
+                if (index !== -1) {
+                    athletes[index] = athlete;
+                }
+            } else {
+                athletes.push(athlete);
+            }
+
+            saveData();
+            resetForm();
+            renderResults();
+            updateLiveWindow();
+        }
+
+        // === RESETOWANIE FORMULARZA ===
+        function resetForm() {
+            document.getElementById('athleteForm').reset();
+            document.getElementById('editId').value = '';
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`preview${i}`).textContent = '-';
+                document.getElementById(`preview${i}`).style.color = '#4a7c59';
+            }
+            updateTeamsList();
+        }
+
+        // === EDYCJA ZAWODNIKA ===
+        function editAthlete(id) {
+            const athlete = athletes.find(a => a.id === id);
+            if (!athlete) return;
+
+            document.getElementById('editId').value = athlete.id;
+            document.getElementById('firstName').value = athlete.firstName;
+            document.getElementById('lastName').value = athlete.lastName;
+            document.getElementById('team').value = athlete.team;
+            document.getElementById('category').value = athlete.category;
+
+            for (let i = 0; i < 4; i++) {
+                const timeInput = document.getElementById(`time${i+1}`);
+                if (athlete.times[i] !== null) {
+                    // Dla biegu 1000m formatuj jako mm:ss
+                    if (i === 3 && athlete.times[i] >= 60) {
+                        const mins = Math.floor(athlete.times[i] / 60);
+                        const secs = (athlete.times[i] % 60).toFixed(1);
+                        timeInput.value = `${mins}:${secs}`;
+                    } else {
+                        timeInput.value = athlete.times[i].toFixed(1);
+                    }
+                } else {
+                    timeInput.value = '';
+                }
+            }
+
+            updatePointsPreview();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // === USUWANIE ZAWODNIKA ===
+        function deleteAthlete(id) {
+            if (!confirm('Czy na pewno chcesz usunąć tego zawodnika?')) return;
+            athletes = athletes.filter(a => a.id !== id);
+            saveData();
+            renderResults();
+            updateLiveWindow();
+        }
+
+        // === RENDEROWANIE WYNIKÓW ===
+        function renderResults() {
+            let filtered = currentFilter === 'all'
+                ? [...athletes]
+                : athletes.filter(a => a.category === currentFilter);
+
+            // Sortowanie według sumy punktów (malejąco)
+            filtered.sort((a, b) => b.totalPoints - a.totalPoints);
+
+            // Wyniki szczegółowe
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            filtered.forEach((athlete, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="rank">${index + 1}</td>
+                    <td>${athlete.firstName} ${athlete.lastName}</td>
+                    <td>${athlete.team}</td>
+                    <td>${getCategoryName(athlete.category)}</td>
+                    <td>${formatTimeWithPoints(athlete.times[0], athlete.points[0])}</td>
+                    <td>${formatTimeWithPoints(athlete.times[1], athlete.points[1])}</td>
+                    <td>${formatTimeWithPoints(athlete.times[2], athlete.points[2])}</td>
+                    <td>${formatTimeWithPoints(athlete.times[3], athlete.points[3])}</td>
+                    <td class="total-points">${athlete.totalPoints.toFixed(1)}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-secondary btn-sm" onclick="editAthlete('${athlete.id}')">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAthlete('${athlete.id}')">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Wyniki skrócone
+            const shortBody = document.getElementById('shortResultsBody');
+            shortBody.innerHTML = '';
+
+            filtered.forEach((athlete, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="rank">${index + 1}</td>
+                    <td>${athlete.firstName} ${athlete.lastName}</td>
+                    <td>${athlete.team}</td>
+                    <td>${getCategoryName(athlete.category)}</td>
+                    <td class="total-points">${athlete.totalPoints.toFixed(1)}</td>
+                `;
+                shortBody.appendChild(row);
+            });
+
+            // Wyniki drużynowe
+            renderTeamResults();
+            updateTeamsList();
+        }
+
+        function formatTimeWithPoints(time, points) {
+            if (time === null) {
+                return `<span class="dnf">dnf</span><br><small>(0 pkt)</small>`;
+            }
+            return `${formatTime(time)}<br><small>(${points.toFixed(1)} pkt)</small>`;
+        }
+
+        function getCategoryName(cat) {
+            const names = {
+                'M35-': 'M do 35',
+                'M35+': 'M 35+',
+                'K35-': 'K do 35',
+                'K35+': 'K 35+'
+            };
+            return names[cat] || cat;
+        }
+
+        // === WYNIKI DRUŻYNOWE ===
+        function renderTeamResults() {
+            const teams = {};
+
+            athletes.forEach(a => {
+                if (!teams[a.team]) {
+                    teams[a.team] = [];
+                }
+                teams[a.team].push(a);
+            });
+
+            const teamScores = Object.entries(teams).map(([name, members]) => {
+                // Sortuj członków według punktów
+                members.sort((a, b) => b.totalPoints - a.totalPoints);
+                // Weź 7 najlepszych
+                const top7 = members.slice(0, 7);
+                const totalScore = top7.reduce((sum, m) => sum + m.totalPoints, 0);
+
+                return {
+                    name,
+                    members,
+                    top7,
+                    totalScore: Math.round(totalScore * 10) / 10
+                };
+            });
+
+            // Sortuj drużyny według sumy punktów
+            teamScores.sort((a, b) => b.totalScore - a.totalScore);
+
+            const container = document.getElementById('teamResults');
+            container.innerHTML = '';
+
+            teamScores.forEach((team, index) => {
+                const card = document.createElement('div');
+                card.className = 'team-card';
+
+                const top7List = team.top7.map((m, i) =>
+                    `<li>${m.firstName} ${m.lastName} - ${m.totalPoints.toFixed(1)} pkt</li>`
+                ).join('');
+
+                card.innerHTML = `
+                    <h3>${index + 1}. ${team.name}</h3>
+                    <div class="team-total">Suma: ${team.totalScore.toFixed(1)} pkt</div>
+                    <p style="margin-top: 10px;"><strong>7 najlepszych zawodników:</strong></p>
+                    <ol style="margin-left: 20px; margin-top: 5px;">${top7List}</ol>
+                    <p style="margin-top: 10px; color: #666;">Łącznie zawodników: ${team.members.length}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // === FILTROWANIE ===
+        function filterCategory(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('.category-filter button').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderResults();
+        }
+
+        // === WIDOK WYNIKÓW ===
+        function showResultsView(view) {
+            currentView = view;
+            document.querySelectorAll('#individual .tabs .tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (view === 'detailed') {
+                document.getElementById('detailedResults').style.display = 'block';
+                document.getElementById('shortResults').style.display = 'none';
+            } else {
+                document.getElementById('detailedResults').style.display = 'none';
+                document.getElementById('shortResults').style.display = 'block';
+            }
+        }
+
+        // === ZAKŁADKI ===
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // === ZAPISYWANIE DANYCH ===
+        function saveData() {
+            localStorage.setItem('athletes', JSON.stringify(athletes));
+        }
+
+        // === AKTUALIZACJA LISTY DRUŻYN ===
+        function updateTeamsList() {
+            const teams = [...new Set(athletes.map(a => a.team))];
+            const datalist = document.getElementById('teamsList');
+            datalist.innerHTML = teams.map(t => `<option value="${t}">`).join('');
+        }
+
+        // === EKSPORT / IMPORT ===
+        function exportData() {
+            const data = JSON.stringify(athletes, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wieloboj_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        if (confirm(`Zaimportować ${imported.length} zawodników? Obecne dane zostaną zastąpione.`)) {
+                            athletes = imported;
+                            saveData();
+                            renderResults();
+                            updateLiveWindow();
+                            alert('Import zakończony pomyślnie!');
+                        }
+                    }
+                } catch (err) {
+                    alert('Błąd importu: nieprawidłowy format pliku');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function clearAllData() {
+            if (confirm('Czy na pewno chcesz usunąć WSZYSTKIE dane? Tej operacji nie można cofnąć!')) {
+                athletes = [];
+                saveData();
+                renderResults();
+                updateLiveWindow();
+            }
+        }
+
+        // === DRUGIE OKNO Z KLASYFIKACJĄ ===
+        function openLiveWindow() {
+            if (liveWindow && !liveWindow.closed) {
+                liveWindow.focus();
+                return;
+            }
+
+            liveWindow = window.open('', 'LiveResults', 'width=1200,height=800');
+
+            const html = `
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wielobój Żołnierski - Klasyfikacja NA ŻYWO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        h1 { text-align: center; margin-bottom: 10px; font-size: 2em; }
+        .update-time { text-align: center; margin-bottom: 20px; opacity: 0.8; }
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .category-tabs button {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .category-tabs button.active {
+            background: white;
+            color: #1a472a;
+        }
+        .results-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #1a472a;
+            color: white;
+        }
+        tr:nth-child(even) { background: #f8f9fa; }
+        tr:hover { background: #e8f5e9; }
+        .rank { font-weight: 700; font-size: 1.2em; }
+        .total { font-weight: 700; color: #4a7c59; font-size: 1.1em; }
+        .dnf { color: #dc3545; }
+        .gold { background: #ffd700 !important; }
+        .silver { background: #c0c0c0 !important; }
+        .bronze { background: #cd7f32 !important; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .live-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #ff0000;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <h1><span class="live-indicator"></span>🎖️ Wielobój Żołnierski - Klasyfikacja NA ŻYWO</h1>
+    <div class="update-time" id="updateTime">Ostatnia aktualizacja: -</div>
+
+    <div class="category-tabs" id="categoryTabs">
+        <button class="active" onclick="showCategory('all')">Wszystkie</button>
+        <button onclick="showCategory('M35-')">Mężczyźni do 35</button>
+        <button onclick="showCategory('M35+')">Mężczyźni 35+</button>
+        <button onclick="showCategory('K35-')">Kobiety do 35</button>
+        <button onclick="showCategory('K35+')">Kobiety 35+</button>
+        <button onclick="showCategory('team')">Drużynowe</button>
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Poz.</th>
+                    <th>Imię i Nazwisko</th>
+                    <th>Drużyna</th>
+                    <th>Kategoria</th>
+                    <th>Lina</th>
+                    <th>BTS</th>
+                    <th>Bieg wach.</th>
+                    <th>Bieg 1000m</th>
+                    <th>SUMA</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let currentCategory = 'all';
+        let athletes = [];
+
+        function showCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-tabs button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderResults();
+        }
+
+        function formatTime(seconds) {
+            if (seconds === null || seconds === undefined) return '<span class="dnf">dnf</span>';
+            if (seconds >= 60) {
+                const mins = Math.floor(seconds / 60);
+                const secs = (seconds % 60).toFixed(1);
+                return mins + ':' + secs.padStart(4, '0');
+            }
+            return seconds.toFixed(1);
+        }
+
+        function getCategoryName(cat) {
+            const names = { 'M35-': 'M do 35', 'M35+': 'M 35+', 'K35-': 'K do 35', 'K35+': 'K 35+' };
+            return names[cat] || cat;
+        }
+
+        function renderResults() {
+            const container = document.getElementById('resultsContainer');
+
+            if (currentCategory === 'team') {
+                renderTeamResults();
+                return;
+            }
+
+            let filtered = currentCategory === 'all'
+                ? [...athletes]
+                : athletes.filter(a => a.category === currentCategory);
+
+            filtered.sort((a, b) => b.totalPoints - a.totalPoints);
+
+            container.innerHTML = \`
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Poz.</th>
+                            <th>Imię i Nazwisko</th>
+                            <th>Drużyna</th>
+                            <th>Kategoria</th>
+                            <th>Lina</th>
+                            <th>BTS</th>
+                            <th>Bieg wach.</th>
+                            <th>Bieg 1000m</th>
+                            <th>SUMA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        \${filtered.map((a, i) => \`
+                            <tr class="\${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
+                                <td class="rank">\${i + 1}</td>
+                                <td>\${a.firstName} \${a.lastName}</td>
+                                <td>\${a.team}</td>
+                                <td>\${getCategoryName(a.category)}</td>
+                                <td>\${formatTime(a.times[0])}<br><small>(\${a.points[0].toFixed(1)})</small></td>
+                                <td>\${formatTime(a.times[1])}<br><small>(\${a.points[1].toFixed(1)})</small></td>
+                                <td>\${formatTime(a.times[2])}<br><small>(\${a.points[2].toFixed(1)})</small></td>
+                                <td>\${formatTime(a.times[3])}<br><small>(\${a.points[3].toFixed(1)})</small></td>
+                                <td class="total">\${a.totalPoints.toFixed(1)}</td>
+                            </tr>
+                        \`).join('')}
+                    </tbody>
+                </table>
+            \`;
+        }
+
+        function renderTeamResults() {
+            const teams = {};
+            athletes.forEach(a => {
+                if (!teams[a.team]) teams[a.team] = [];
+                teams[a.team].push(a);
+            });
+
+            const teamScores = Object.entries(teams).map(([name, members]) => {
+                members.sort((a, b) => b.totalPoints - a.totalPoints);
+                const top7 = members.slice(0, 7);
+                return {
+                    name,
+                    top7,
+                    totalScore: Math.round(top7.reduce((s, m) => s + m.totalPoints, 0) * 10) / 10
+                };
+            });
+
+            teamScores.sort((a, b) => b.totalScore - a.totalScore);
+
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = \`
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Poz.</th>
+                            <th>Drużyna</th>
+                            <th>Suma punktów</th>
+                            <th>7 najlepszych zawodników</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        \${teamScores.map((t, i) => \`
+                            <tr class="\${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
+                                <td class="rank">\${i + 1}</td>
+                                <td><strong>\${t.name}</strong></td>
+                                <td class="total">\${t.totalScore.toFixed(1)}</td>
+                                <td style="text-align: left; font-size: 0.9em;">
+                                    \${t.top7.map(m => m.firstName + ' ' + m.lastName + ' (' + m.totalPoints.toFixed(1) + ')').join('<br>')}
+                                </td>
+                            </tr>
+                        \`).join('')}
+                    </tbody>
+                </table>
+            \`;
+        }
+
+        function updateData(data) {
+            athletes = data;
+            renderResults();
+            document.getElementById('updateTime').textContent =
+                'Ostatnia aktualizacja: ' + new Date().toLocaleTimeString('pl-PL');
+        }
+
+        // Nasłuchuj na zmiany w localStorage
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'athletes') {
+                athletes = JSON.parse(e.newValue || '[]');
+                renderResults();
+                document.getElementById('updateTime').textContent =
+                    'Ostatnia aktualizacja: ' + new Date().toLocaleTimeString('pl-PL');
+            }
+        });
+
+        // Pobierz początkowe dane
+        athletes = JSON.parse(localStorage.getItem('athletes') || '[]');
+        renderResults();
+        document.getElementById('updateTime').textContent =
+            'Ostatnia aktualizacja: ' + new Date().toLocaleTimeString('pl-PL');
+    </script>
+</body>
+</html>
+            `;
+
+            liveWindow.document.write(html);
+            liveWindow.document.close();
+        }
+
+        function updateLiveWindow() {
+            // Wymuszenie zdarzenia storage przez zapisanie i odczytanie
+            const current = localStorage.getItem('athletes');
+            localStorage.setItem('athletes', current);
+
+            // Jeśli okno jest otwarte, bezpośrednio zaktualizuj dane
+            if (liveWindow && !liveWindow.closed && liveWindow.updateData) {
+                liveWindow.updateData(athletes);
+            }
+        }
+
+        // === DRUKOWANIE / PDF ===
+        function showPDFOptions() {
+            document.getElementById('pdfModal').classList.add('active');
+        }
+
+        function closePDFModal() {
+            document.getElementById('pdfModal').classList.remove('active');
+        }
+
+        function printResults(category, type) {
+            closePDFModal();
+
+            let filtered = category === 'all' || category === 'team'
+                ? [...athletes]
+                : athletes.filter(a => a.category === category);
+
+            filtered.sort((a, b) => b.totalPoints - a.totalPoints);
+
+            let html = `
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyniki Wieloboju Żołnierskiego</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { text-align: center; color: #1a472a; }
+        h2 { color: #4a7c59; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        th { background: #1a472a; color: white; }
+        tr:nth-child(even) { background: #f8f9fa; }
+        .rank { font-weight: bold; }
+        .total { font-weight: bold; color: #4a7c59; }
+        .dnf { color: #dc3545; }
+        .footer { margin-top: 30px; text-align: center; color: #666; font-size: 12px; }
+        @media print {
+            th { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎖️ Wielobój Żołnierski - Wyniki</h1>
+    <p style="text-align: center;">Data: ${new Date().toLocaleDateString('pl-PL')}</p>
+            `;
+
+            if (category === 'team') {
+                // Wyniki drużynowe
+                const teams = {};
+                athletes.forEach(a => {
+                    if (!teams[a.team]) teams[a.team] = [];
+                    teams[a.team].push(a);
+                });
+
+                const teamScores = Object.entries(teams).map(([name, members]) => {
+                    members.sort((a, b) => b.totalPoints - a.totalPoints);
+                    const top7 = members.slice(0, 7);
+                    return {
+                        name,
+                        top7,
+                        totalScore: Math.round(top7.reduce((s, m) => s + m.totalPoints, 0) * 10) / 10
+                    };
+                });
+
+                teamScores.sort((a, b) => b.totalScore - a.totalScore);
+
+                html += `<h2>Klasyfikacja Drużynowa</h2>`;
+                html += `<table><thead><tr><th>Poz.</th><th>Drużyna</th><th>Suma punktów</th></tr></thead><tbody>`;
+
+                teamScores.forEach((t, i) => {
+                    html += `<tr><td class="rank">${i+1}</td><td>${t.name}</td><td class="total">${t.totalScore.toFixed(1)}</td></tr>`;
+                });
+
+                html += `</tbody></table>`;
+
+                // Szczegóły drużyn
+                teamScores.forEach((t, i) => {
+                    html += `<h3 style="margin-top: 30px;">${i+1}. ${t.name} (${t.totalScore.toFixed(1)} pkt)</h3>`;
+                    html += `<p>7 najlepszych zawodników:</p><ol>`;
+                    t.top7.forEach(m => {
+                        html += `<li>${m.firstName} ${m.lastName} - ${m.totalPoints.toFixed(1)} pkt</li>`;
+                    });
+                    html += `</ol>`;
+                });
+
+            } else {
+                // Wyniki indywidualne
+                const catName = category === 'all' ? 'Wszystkie kategorie' : getCategoryName(category);
+                html += `<h2>${catName}</h2>`;
+
+                if (type === 'detailed') {
+                    html += `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Poz.</th>
+                                    <th>Imię i Nazwisko</th>
+                                    <th>Drużyna</th>
+                                    <th>Kategoria</th>
+                                    <th>Lina</th>
+                                    <th>BTS</th>
+                                    <th>Bieg wach.</th>
+                                    <th>Bieg 1000m</th>
+                                    <th>SUMA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    filtered.forEach((a, i) => {
+                        html += `
+                            <tr>
+                                <td class="rank">${i+1}</td>
+                                <td>${a.firstName} ${a.lastName}</td>
+                                <td>${a.team}</td>
+                                <td>${getCategoryName(a.category)}</td>
+                                <td>${a.times[0] !== null ? formatTime(a.times[0]) + '<br>(' + a.points[0].toFixed(1) + ')' : '<span class="dnf">dnf</span><br>(0)'}</td>
+                                <td>${a.times[1] !== null ? formatTime(a.times[1]) + '<br>(' + a.points[1].toFixed(1) + ')' : '<span class="dnf">dnf</span><br>(0)'}</td>
+                                <td>${a.times[2] !== null ? formatTime(a.times[2]) + '<br>(' + a.points[2].toFixed(1) + ')' : '<span class="dnf">dnf</span><br>(0)'}</td>
+                                <td>${a.times[3] !== null ? formatTime(a.times[3]) + '<br>(' + a.points[3].toFixed(1) + ')' : '<span class="dnf">dnf</span><br>(0)'}</td>
+                                <td class="total">${a.totalPoints.toFixed(1)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `</tbody></table>`;
+                } else {
+                    // Wyniki skrócone
+                    html += `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Poz.</th>
+                                    <th>Imię i Nazwisko</th>
+                                    <th>Drużyna</th>
+                                    <th>Kategoria</th>
+                                    <th>SUMA PKT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    filtered.forEach((a, i) => {
+                        html += `
+                            <tr>
+                                <td class="rank">${i+1}</td>
+                                <td>${a.firstName} ${a.lastName}</td>
+                                <td>${a.team}</td>
+                                <td>${getCategoryName(a.category)}</td>
+                                <td class="total">${a.totalPoints.toFixed(1)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `</tbody></table>`;
+                }
+            }
+
+            html += `
+    <div class="footer">
+        Wygenerowano: ${new Date().toLocaleString('pl-PL')}<br>
+        System Wieloboju Żołnierskiego
+    </div>
+</body>
+</html>
+            `;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.onload = function() {
+                printWindow.print();
+            };
+        }
+
+        // === INICJALIZACJA ===
+        document.addEventListener('DOMContentLoaded', function() {
+            renderResults();
+            updateTeamsList();
+
+            // Aktualizuj podgląd punktów przy zmianie kategorii
+            document.getElementById('category').addEventListener('change', updatePointsPreview);
+        });
+    </script>
+</body>
+</html>
