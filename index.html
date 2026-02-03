@@ -422,8 +422,10 @@
                 <button class="modal-close" onclick="closePDFModal()">&times;</button>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;">
-                <button class="btn btn-primary" onclick="printResults('all','detailed')">Wszystkie - szczegolowe</button>
-                <button class="btn btn-primary" onclick="printResults('all','short')">Wszystkie - skrocone</button>
+                <button class="btn btn-primary" onclick="printResults('allcategories','detailed')">Wszystkie kategorie (osobno) - szczegolowe</button>
+                <button class="btn btn-primary" onclick="printResults('allcategories','short')">Wszystkie kategorie (osobno) - skrocone</button>
+                <button class="btn btn-secondary" onclick="printResults('all','detailed')">OPEN - szczegolowe</button>
+                <button class="btn btn-secondary" onclick="printResults('all','short')">OPEN - skrocone</button>
                 <button class="btn btn-secondary" onclick="printResults('M35-','detailed')">Mezczyzni do 35</button>
                 <button class="btn btn-secondary" onclick="printResults('M35+','detailed')">Mezczyzni 35+</button>
                 <button class="btn btn-secondary" onclick="printResults('K35-','detailed')">Kobiety do 35</button>
@@ -437,7 +439,7 @@
         // === KONFIGURACJA ===
         var SCORING = {
             M: {
-                lina: { base: 7, perTenth: 0.2 },
+                lina: { base: 7, perTenth: 2.0 },
                 bts: { base: 35, perTenth: 1.5 },
                 biegW: { base: 55, perTenth: 1.0 },
                 bieg1000: { base: 190, perSec: 1.0 }
@@ -941,7 +943,7 @@
                 '.dnf { color: #8b0000; }' +
                 '.gold { background: linear-gradient(90deg, #c9a227 0%, #f5e6a3 50%, #c9a227 100%) !important; }' +
                 '.silver { background: linear-gradient(90deg, #71706e 0%, #d1d1d1 50%, #71706e 100%) !important; }' +
-                '.bronze { background: linear-gradient(90deg, #6d4c30 0%, #cd7f32 50%, #6d4c30 100%) !important; }' +
+                '.bronze { background: linear-gradient(90deg, #5c4a3d 0%, #8b7355 50%, #5c4a3d 100%) !important; }' +
                 '@keyframes scrollUp { 0%, 15% { transform: translateY(0); } 85%, 100% { transform: translateY(var(--scroll-distance)); } }' +
                 '</style></head><body>' +
                 '<div class="header">' +
@@ -980,15 +982,12 @@
 
         function printResults(category, type) {
             closePDFModal();
-            var filtered = (category === 'all' || category === 'team') ? athletes.slice() :
-                athletes.filter(function(a) { return a.category === category; });
-            filtered.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
 
             var html = '<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8">' +
                 '<title>Wyniki Wieloboju</title><style>' +
                 'body { font-family: Arial, sans-serif; padding: 20px; }' +
                 'h1 { text-align: center; color: #1a2744; border-bottom: 3px solid #4a5a3a; padding-bottom: 10px; }' +
-                'h2 { color: #2c3e50; margin-top: 20px; }' +
+                'h2 { color: #2c3e50; margin-top: 30px; page-break-before: auto; }' +
                 'table { width: 100%; border-collapse: collapse; margin-top: 15px; }' +
                 'th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }' +
                 'th { background: #1a2744; color: white; }' +
@@ -996,47 +995,70 @@
                 '.rank { font-weight: bold; }' +
                 '.total { font-weight: bold; color: #2c3e50; }' +
                 '.dnf { color: #8b0000; }' +
-                '@media print { th { background: #333 !important; -webkit-print-color-adjust: exact; } }' +
+                '.footer { margin-top: 40px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #ccc; padding-top: 15px; }' +
+                '@media print { th { background: #333 !important; -webkit-print-color-adjust: exact; } .category-section { page-break-inside: avoid; } }' +
                 '</style></head><body>' +
                 '<h1>WIELOBOJ ZOLNIERSKI - WYNIKI</h1>' +
                 '<p style="text-align:center;">Data: ' + new Date().toLocaleDateString('pl-PL') + '</p>';
 
             if (category === 'team') {
                 html += buildTeamPrintHtml();
+            } else if (category === 'allcategories') {
+                // Wszystkie kategorie osobno w jednym dokumencie
+                var categories = ['M35-', 'M35+', 'K35-', 'K35+'];
+                categories.forEach(function(cat) {
+                    var filtered = athletes.filter(function(a) { return a.category === cat; });
+                    filtered.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
+                    if (filtered.length > 0) {
+                        html += '<div class="category-section">';
+                        html += '<h2>' + getCategoryName(cat) + '</h2>';
+                        html += buildCategoryTable(filtered, type);
+                        html += '</div>';
+                    }
+                });
             } else {
-                var catName = category === 'all' ? 'Wszystkie kategorie' : getCategoryName(category);
+                var filtered = (category === 'all') ? athletes.slice() :
+                    athletes.filter(function(a) { return a.category === category; });
+                filtered.sort(function(a, b) { return b.totalPoints - a.totalPoints; });
+                var catName = category === 'all' ? 'Klasyfikacja OPEN' : getCategoryName(category);
                 html += '<h2>' + catName + '</h2>';
-                if (type === 'detailed') {
-                    html += '<table><thead><tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>Kat.</th>' +
-                        '<th>Lina</th><th>BTS</th><th>Bieg wach.</th><th>Bieg 1000m</th><th>SUMA</th></tr></thead><tbody>';
-                    for (var i = 0; i < filtered.length; i++) {
-                        var a = filtered[i];
-                        html += '<tr><td class="rank">' + (i+1) + '</td><td>' + a.firstName + ' ' + a.lastName + '</td>' +
-                            '<td>' + a.team + '</td><td>' + getCategoryName(a.category) + '</td>' +
-                            '<td>' + (a.times[0] !== null ? formatTime(a.times[0]) + ' (' + a.points[0].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
-                            '<td>' + (a.times[1] !== null ? formatTime(a.times[1]) + ' (' + a.points[1].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
-                            '<td>' + (a.times[2] !== null ? formatTime(a.times[2]) + ' (' + a.points[2].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
-                            '<td>' + (a.times[3] !== null ? formatTime(a.times[3]) + ' (' + a.points[3].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
-                            '<td class="total">' + a.totalPoints.toFixed(1) + '</td></tr>';
-                    }
-                    html += '</tbody></table>';
-                } else {
-                    html += '<table><thead><tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>Kat.</th><th>SUMA PKT</th></tr></thead><tbody>';
-                    for (var j = 0; j < filtered.length; j++) {
-                        var b = filtered[j];
-                        html += '<tr><td class="rank">' + (j+1) + '</td><td>' + b.firstName + ' ' + b.lastName + '</td>' +
-                            '<td>' + b.team + '</td><td>' + getCategoryName(b.category) + '</td>' +
-                            '<td class="total">' + b.totalPoints.toFixed(1) + '</td></tr>';
-                    }
-                    html += '</tbody></table>';
-                }
+                html += buildCategoryTable(filtered, type);
             }
-            html += '<div style="margin-top:30px;text-align:center;color:#666;font-size:12px;">Wygenerowano: ' +
+            html += '<div class="footer">wygenerował: YO&GO Events<br>' +
                 new Date().toLocaleString('pl-PL') + '</div></body></html>';
             var printWin = window.open('', '_blank');
             printWin.document.write(html);
             printWin.document.close();
             printWin.onload = function() { printWin.print(); };
+        }
+
+        function buildCategoryTable(filtered, type) {
+            var html = '';
+            if (type === 'detailed') {
+                html += '<table><thead><tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th>' +
+                    '<th>Lina</th><th>BTS</th><th>Bieg wach.</th><th>Bieg 1000m</th><th>SUMA</th></tr></thead><tbody>';
+                for (var i = 0; i < filtered.length; i++) {
+                    var a = filtered[i];
+                    html += '<tr><td class="rank">' + (i+1) + '</td><td>' + a.firstName + ' ' + a.lastName + '</td>' +
+                        '<td>' + a.team + '</td>' +
+                        '<td>' + (a.times[0] !== null ? formatTime(a.times[0]) + ' (' + a.points[0].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
+                        '<td>' + (a.times[1] !== null ? formatTime(a.times[1]) + ' (' + a.points[1].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
+                        '<td>' + (a.times[2] !== null ? formatTime(a.times[2]) + ' (' + a.points[2].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
+                        '<td>' + (a.times[3] !== null ? formatTime(a.times[3]) + ' (' + a.points[3].toFixed(1) + ')' : '<span class="dnf">dnf</span>') + '</td>' +
+                        '<td class="total">' + a.totalPoints.toFixed(1) + '</td></tr>';
+                }
+                html += '</tbody></table>';
+            } else {
+                html += '<table><thead><tr><th>Poz.</th><th>Imie i Nazwisko</th><th>Druzyna</th><th>SUMA PKT</th></tr></thead><tbody>';
+                for (var j = 0; j < filtered.length; j++) {
+                    var b = filtered[j];
+                    html += '<tr><td class="rank">' + (j+1) + '</td><td>' + b.firstName + ' ' + b.lastName + '</td>' +
+                        '<td>' + b.team + '</td>' +
+                        '<td class="total">' + b.totalPoints.toFixed(1) + '</td></tr>';
+                }
+                html += '</tbody></table>';
+            }
+            return html;
         }
 
         function buildTeamPrintHtml() {
