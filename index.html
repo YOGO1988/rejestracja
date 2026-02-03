@@ -647,6 +647,9 @@
             // Zapisz do localStorage
             saveData();
 
+            // Aktualizuj okno live z opoznieniem (debounce)
+            scheduleLiveUpdate();
+
             // Aktualizuj wyswietlanie punktow
             var ptsCell = document.getElementById('pts_' + athleteId + '_' + eventIndex);
             if (time !== null) {
@@ -809,6 +812,8 @@
         }
 
         // === DRUGIE OKNO - PROFESJONALNE KOLORY ===
+        var liveUpdateTimer = null;
+
         function openLiveWindow() {
             if (liveWindow && !liveWindow.closed) {
                 liveWindow.focus();
@@ -818,8 +823,17 @@
             writeLiveWindowContent();
         }
 
-        function writeLiveWindowContent() {
-            if (!liveWindow || liveWindow.closed) return;
+        function scheduleLiveUpdate() {
+            // Debounce - aktualizuj po 1 sekundzie od ostatniej zmiany
+            if (liveUpdateTimer) clearTimeout(liveUpdateTimer);
+            liveUpdateTimer = setTimeout(function() {
+                if (liveWindow && !liveWindow.closed) {
+                    updateLiveContent();
+                }
+            }, 1000);
+        }
+
+        function getLiveHtmlContent() {
             var categories = ['M35-', 'M35+', 'K35-', 'K35+'];
             var categoryNames = {
                 'M35-': 'MEZCZYZNI do 35 lat',
@@ -857,6 +871,48 @@
                 return rows;
             }
 
+            var gridHtml = '';
+            categories.forEach(function(cat, idx) {
+                var headerClass = cat === 'M35-' ? 'm35m' : cat === 'M35+' ? 'm35p' : cat === 'K35-' ? 'k35m' : 'k35p';
+                gridHtml += '<div class="category-box">' +
+                    '<div class="category-header ' + headerClass + '">' + categoryNames[cat] + ' (' + categoryData[cat].length + ')</div>' +
+                    '<div class="scroll-container" id="scroll' + idx + '">' +
+                    '<div class="scroll-content" id="content' + idx + '">' +
+                    '<table><thead><tr>' +
+                    '<th>Poz</th><th>Zawodnik</th><th>Druzyna</th>' +
+                    '<th>Lin</th><th>BTS</th><th>Wach</th><th>1km</th><th>SUMA</th>' +
+                    '</tr></thead><tbody>' + buildCategoryHtml(cat) + '</tbody></table>' +
+                    '</div></div></div>';
+            });
+
+            return {
+                time: new Date().toLocaleTimeString('pl-PL'),
+                grid: gridHtml
+            };
+        }
+
+        function updateLiveContent() {
+            if (!liveWindow || liveWindow.closed) return;
+            try {
+                var content = getLiveHtmlContent();
+                var doc = liveWindow.document;
+                var timeEl = doc.getElementById('updateTime');
+                var gridEl = doc.getElementById('gridContainer');
+                if (timeEl) timeEl.textContent = 'Aktualizacja: ' + content.time;
+                if (gridEl) gridEl.innerHTML = content.grid;
+                // Ponownie ustaw scroll
+                if (liveWindow.setupScroll) liveWindow.setupScroll();
+            } catch(e) {
+                // Jezeli blad - przerysuj cale okno
+                writeLiveWindowContent();
+            }
+        }
+
+        function writeLiveWindowContent() {
+            if (!liveWindow || liveWindow.closed) return;
+
+            var content = getLiveHtmlContent();
+
             var html = '<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8">' +
                 '<title>Klasyfikacja NA ZYWO</title>' +
                 '<style>' +
@@ -890,44 +946,27 @@
                 '</style></head><body>' +
                 '<div class="header">' +
                 '<h1><span class="live-dot"></span>WIELOBOJ ZOLNIERSKI - KLASYFIKACJA NA ZYWO</h1>' +
-                '<div class="update-time">Aktualizacja: ' + new Date().toLocaleTimeString('pl-PL') + '</div>' +
-                '</div><div class="grid">';
-
-            categories.forEach(function(cat, idx) {
-                var headerClass = cat === 'M35-' ? 'm35m' : cat === 'M35+' ? 'm35p' : cat === 'K35-' ? 'k35m' : 'k35p';
-                html += '<div class="category-box">' +
-                    '<div class="category-header ' + headerClass + '">' + categoryNames[cat] + ' (' + categoryData[cat].length + ')</div>' +
-                    '<div class="scroll-container" id="scroll' + idx + '">' +
-                    '<div class="scroll-content" id="content' + idx + '">' +
-                    '<table><thead><tr>' +
-                    '<th>Poz</th><th>Zawodnik</th><th>Druzyna</th>' +
-                    '<th>Lin</th><th>BTS</th><th>Wach</th><th>1km</th><th>SUMA</th>' +
-                    '</tr></thead><tbody>' + buildCategoryHtml(cat) + '</tbody></table>' +
-                    '</div></div></div>';
-            });
-
-            html += '</div><script>' +
-                'function setupScroll() {' +
+                '<div class="update-time" id="updateTime">Aktualizacja: ' + content.time + '</div>' +
+                '</div>' +
+                '<div class="grid" id="gridContainer">' + content.grid + '</div>' +
+                '<script>' +
+                'window.setupScroll = function() {' +
                 '  for (var i = 0; i < 4; i++) {' +
                 '    var container = document.getElementById("scroll" + i);' +
                 '    var content = document.getElementById("content" + i);' +
                 '    if (content && container) {' +
+                '      content.style.animation = "none";' +
                 '      var contentHeight = content.scrollHeight;' +
                 '      var containerHeight = container.clientHeight;' +
                 '      if (contentHeight > containerHeight) {' +
                 '        var distance = -(contentHeight - containerHeight);' +
                 '        content.style.setProperty("--scroll-distance", distance + "px");' +
-                '        content.style.animation = "scrollUp 12s linear infinite";' +
+                '        setTimeout(function(c) { return function() { c.style.animation = "scrollUp 12s linear infinite"; }; }(content), 50);' +
                 '      }' +
                 '    }' +
                 '  }' +
-                '}' +
-                'setTimeout(setupScroll, 100);' +
-                'setInterval(function() {' +
-                '  var stored = localStorage.getItem("athletes");' +
-                '  if (stored !== window.lastData) { window.lastData = stored; location.reload(); }' +
-                '}, 2000);' +
-                'window.lastData = localStorage.getItem("athletes");' +
+                '};' +
+                'setTimeout(window.setupScroll, 200);' +
                 '<\/script></body></html>';
 
             liveWindow.document.open();
