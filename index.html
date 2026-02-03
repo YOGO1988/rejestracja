@@ -1096,7 +1096,34 @@
             return html;
         }
 
+        // Przelicz wszystkie punkty na podstawie aktualnej konfiguracji SCORING
+        function recalculateAllPoints() {
+            var changed = false;
+            athletes.forEach(function(a) {
+                var gender = a.category.charAt(0); // M lub K
+                var newTotal = 0;
+                for (var i = 0; i < 4; i++) {
+                    var newPoints = calculatePoints(a.times[i], i, gender);
+                    if (a.points[i] !== newPoints) {
+                        a.points[i] = newPoints;
+                        changed = true;
+                    }
+                    newTotal += a.points[i];
+                }
+                newTotal = Math.round(newTotal * 10) / 10;
+                if (a.totalPoints !== newTotal) {
+                    a.totalPoints = newTotal;
+                    changed = true;
+                }
+            });
+            if (changed) {
+                saveData();
+                console.log('Przeliczono punkty dla wszystkich zawodnikow');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            recalculateAllPoints();
             renderRegistrationTable();
             updateTeamsList();
         });
