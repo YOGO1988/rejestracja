@@ -3,7 +3,7 @@
  * Plugin Name: Wyniki Biegów
  * Plugin URI: https://github.com/YOGO1988/rejestracja
  * Description: Wtyczka do zarządzania wynikami biegów - wyświetla tabelę z wynikami w formacie PDF i online
- * Version: 2.0.3
+ * Version: 2.0.4
  * Author: YO&GO Events
  * Text Domain: race-results
  * Domain Path: /languages
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definiowanie stałych
-define('RACE_RESULTS_VERSION', '2.0.3');
+define('RACE_RESULTS_VERSION', '2.0.4');
 define('RACE_RESULTS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('RACE_RESULTS_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('RACE_RESULTS_PLUGIN_FILE', __FILE__);
@@ -76,6 +76,30 @@ class Race_Results {
         Race_Results_Frontend::get_instance();
         Race_Results_Migration::get_instance();
         Race_Results_Import_Page::get_instance();
+
+        // Wyczyść cache po aktualizacji
+        add_action('upgrader_process_complete', array($this, 'clear_cache_after_update'), 10, 2);
+    }
+
+    /**
+     * Wyczyść cache po aktualizacji wtyczki
+     */
+    public function clear_cache_after_update($upgrader_object, $options) {
+        if ($options['action'] == 'update' && $options['type'] == 'plugin') {
+            // Wyczyść cache WordPress
+            wp_cache_flush();
+
+            // Wyczyść cache popularnych wtyczek cache
+            if (function_exists('wp_cache_clear_cache')) {
+                wp_cache_clear_cache();
+            }
+            if (function_exists('w3tc_flush_all')) {
+                w3tc_flush_all();
+            }
+            if (function_exists('wp_rocket_clean_domain')) {
+                wp_rocket_clean_domain();
+            }
+        }
     }
 
     /**
