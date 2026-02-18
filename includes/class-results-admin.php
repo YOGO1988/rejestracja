@@ -174,6 +174,50 @@ class Race_Results_Admin {
     }
 
     /**
+     * Czyści cache wszystkich popularnych wtyczek cache
+     */
+    private function flush_all_caches() {
+        // WordPress object cache
+        wp_cache_flush();
+
+        // WP Super Cache
+        if (function_exists('wp_cache_clear_cache')) {
+            wp_cache_clear_cache();
+        }
+        // W3 Total Cache
+        if (function_exists('w3tc_flush_all')) {
+            w3tc_flush_all();
+        }
+        // WP Rocket
+        if (function_exists('rocket_clean_domain')) {
+            rocket_clean_domain();
+        }
+        // LiteSpeed Cache
+        if (class_exists('LiteSpeed_Cache_API')) {
+            LiteSpeed_Cache_API::purge_all();
+        }
+        if (class_exists('\LiteSpeed\Purge')) {
+            \LiteSpeed\Purge::purge_all();
+        }
+        // WP Fastest Cache
+        if (function_exists('wpfc_clear_all_cache')) {
+            wpfc_clear_all_cache(true);
+        }
+        // Autoptimize
+        if (class_exists('autoptimizeCache')) {
+            autoptimizeCache::clearall();
+        }
+        // Comet Cache
+        if (defined('COMET_CACHE_ENABLE') && COMET_CACHE_ENABLE) {
+            comet_cache::clear();
+        }
+        // SG Optimizer (SiteGround)
+        if (function_exists('sg_cachepress_purge_cache')) {
+            sg_cachepress_purge_cache();
+        }
+    }
+
+    /**
      * AJAX: Dodawanie wyniku
      */
     public function ajax_add_result() {
@@ -206,6 +250,7 @@ class Race_Results_Admin {
         $result = $this->db->add_result($data);
 
         if ($result) {
+            $this->flush_all_caches();
             wp_send_json_success(array(
                 'message' => 'Wynik został dodany',
                 'id' => $result
@@ -250,6 +295,7 @@ class Race_Results_Admin {
         $result = $this->db->update_result($id, $data);
 
         if ($result !== false) {
+            $this->flush_all_caches();
             wp_send_json_success(array('message' => 'Wynik został zaktualizowany'));
         } else {
             global $wpdb;
@@ -271,6 +317,7 @@ class Race_Results_Admin {
         $result = $this->db->delete_result($id);
 
         if ($result !== false) {
+            $this->flush_all_caches();
             wp_send_json_success(array('message' => 'Wynik został usunięty'));
         } else {
             wp_send_json_error(array('message' => 'Nie udało się usunąć wyniku'));
@@ -296,6 +343,7 @@ class Race_Results_Admin {
         $result = $this->db->update_order($order);
 
         if ($result) {
+            $this->flush_all_caches();
             wp_send_json_success(array('message' => 'Kolejność została zaktualizowana'));
         } else {
             wp_send_json_error(array('message' => 'Nie udało się zaktualizować kolejności'));
