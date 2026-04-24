@@ -3,7 +3,7 @@
  * Plugin Name: Rejestracja na Biegi
  * Plugin URI: https://github.com/YOGO1988/rejestracja
  * Description: Wtyczka do zarządzania rejestracją na biegi - wyświetla tabelę z linkami do rejestracji
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: YOGO1988
  * Text Domain: race-registration
  * Domain Path: /languages
@@ -14,8 +14,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Zabezpieczenie przed podwójnym załadowaniem
+if (defined('RACE_REG_VERSION')) {
+    return;
+}
+
 // Definiowanie stałych
-define('RACE_REG_VERSION', '1.0.0');
+define('RACE_REG_VERSION', '2.0.0');
 define('RACE_REG_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('RACE_REG_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('RACE_REG_PLUGIN_FILE', __FILE__);

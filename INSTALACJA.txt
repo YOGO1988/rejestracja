@@ -1,0 +1,58 @@
+==========================================
+INSTRUKCJA AKTUALIZACJI WTYCZKI
+Rejestracja na Biegi v2.0.0
+==========================================
+
+WAŻNE: Ta wersja zawiera poprawki błędów i nowe funkcje mobilne!
+
+KROK 1: USUŃ STARĄ WERSJĘ
+--------------------------
+1. Zaloguj się do WordPress Admin (wp-admin)
+2. Przejdź do: Wtyczki → Zainstalowane wtyczki
+3. Znajdź wtyczkę "Rejestracja na Biegi" (starą wersję)
+4. Kliknij "Dezaktywuj"
+5. Kliknij "Usuń"
+
+⚠️ NIE MARTW SIĘ - dane z zawodów NIE ZOSTANĄ USUNIĘTE!
+   Są bezpiecznie zapisane w bazie danych.
+
+
+KROK 2: ZAINSTALUJ NOWĄ WERSJĘ
+-------------------------------
+1. Spakuj wszystkie pliki z tego folderu do ZIP
+   (admin, includes, public, race-registration.php, etc.)
+
+2. W WordPress Admin przejdź do: Wtyczki → Dodaj nową
+3. Kliknij "Wyślij wtyczkę na serwer"
+4. Wybierz plik ZIP
+5. Kliknij "Zainstaluj"
+6. Kliknij "Aktywuj wtyczkę"
+
+
+ALTERNATYWNIE (przez FTP/Panel):
+---------------------------------
+1. Połącz się z serwerem przez FTP lub panel hostingu
+2. Usuń folder: /wp-content/plugins/2/
+   (lub jak się nazywa stary folder)
+3. Skopiuj WSZYSTKIE pliki z tego folderu do:
+   /wp-content/plugins/race-registration/
+4. W WordPress Admin aktywuj wtyczkę
+
+
+CO NOWEGO W WERSJI 2.0.0:
+--------------------------
+✅ Naprawiono błąd z dodawaniem biegów (location.reload)
+✅ Naprawiono checkboxy w formularzu edycji
+✅ Dodano pełną responsywność dla telefonów
+✅ Modal nie znika przy zmianie kart
+✅ Przyciski akcji z lepszym debugowaniem
+✅ Profesjonalny wygląd mobilny (karty zamiast tabeli)
+
+
+POMOC:
+------
+Jeśli masz problemy, sprawdź logi błędów w:
+- WordPress: wp-content/debug.log (jeśli WP_DEBUG włączony)
+- Przeglądarka: F12 → Console
+
+Wsparcie: https://github.com/YOGO1988/rejestracja/issues
