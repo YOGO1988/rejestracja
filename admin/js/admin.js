@@ -33,13 +33,6 @@ jQuery(document).ready(function($) {
         modal.fadeOut();
     });
 
-    // Zamykanie modala po kliknięciu poza nim
-    $(window).on('click', function(e) {
-        if ($(e.target).is(modal)) {
-            modal.fadeOut();
-        }
-    });
-
     // Dodawanie/edycja zawodu
     form.on('submit', function(e) {
         e.preventDefault();
@@ -101,7 +94,7 @@ jQuery(document).ready(function($) {
                     showNotice(response.data.message, 'success');
                     modal.fadeOut();
                     setTimeout(function() {
-                        location.reload();
+                        window.location.reload();
                     }, 500);
                 } else {
                     console.log('Server returned error:', response.data);
